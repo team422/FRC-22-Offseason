@@ -119,4 +119,8 @@ public class Drive extends SubsystemBase {
     public void setCoast() {
         io.setBrake(false);
     }
+
+    public void resetDriveSensors() {
+        io.resetDriveSensors();
+    }
 }
