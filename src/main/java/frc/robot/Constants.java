@@ -13,4 +13,12 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+    /**
+     * Enumerator that holds the bot types
+     */
+    public enum BotType {
+        COMP, PRACTICE
+    }
+
+    public static final BotType bot = BotType.COMP;
 }
