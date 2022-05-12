@@ -56,11 +56,11 @@ public class Robot extends TimedRobot {
     /** This function is called once each time the robot enters Disabled mode. */
     @Override
     public void disabledInit() {
+        m_robotTuner.getTunedValues();
     }
 
     @Override
     public void disabledPeriodic() {
-        m_robotTuner.getTunedValues(Constants.tuningMode);
     }
 
     /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
@@ -93,7 +93,7 @@ public class Robot extends TimedRobot {
     /** This function is called periodically during operator control. */
     @Override
     public void teleopPeriodic() {
-        m_robotTuner.Tune(Constants.tuningMode);
+        m_robotTuner.Tune();
     }
 
     @Override
