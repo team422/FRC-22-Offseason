@@ -24,39 +24,43 @@ public class PIDTuning {
         SmartDashboard.putNumber("D Gain", kd);
     }
 
-    public void Tune() {
-        TunableNumber TunableP = new TunableNumber("P Gain", 0);
-        TunableNumber TunableI = new TunableNumber("I Gain", 0);
-        TunableNumber TunableD = new TunableNumber("D Gain", 0);
-        TunableNumber TunableF = new TunableNumber("F Gain", 0);
-        TunableNumber TunableSetPoint = new TunableNumber("Set Point", 0);
-        double setpoint = TunableSetPoint.get();
-        double p = TunableP.get();
-        double i = TunableI.get();
-        double d = TunableD.get();
-        double f = TunableF.get();
+    public void Tune(boolean isTuningMode) {
+        if (isTuningMode) {
+            TunableNumber TunableP = new TunableNumber("P Gain", 0);
+            TunableNumber TunableI = new TunableNumber("I Gain", 0);
+            TunableNumber TunableD = new TunableNumber("D Gain", 0);
+            TunableNumber TunableF = new TunableNumber("F Gain", 0);
+            TunableNumber TunableSetPoint = new TunableNumber("Set Point", 0);
+            double setpoint = TunableSetPoint.get();
+            double p = TunableP.get();
+            double i = TunableI.get();
+            double d = TunableD.get();
+            double f = TunableF.get();
 
-        if ((p != kp) || (i != ki) || (d != kd) || (f != kf)) {
-            climber.setClimberPID(f, p, i, d);
-            kf = f;
-            kp = p;
-            ki = i;
-            kd = d;
-        }
+            if ((p != kp) || (i != ki) || (d != kd) || (f != kf)) {
+                climber.setClimberPID(f, p, i, d);
+                kf = f;
+                kp = p;
+                ki = i;
+                kd = d;
+            }
 
-        if (setpoint != setPoint) {
-            climber.SetTarget(setpoint);
-            setPoint = setpoint;
+            if (setpoint != setPoint) {
+                climber.SetTarget(setpoint);
+                setPoint = setpoint;
+            }
+            SmartDashboard.putNumber("Encoder Position", climber.getEncoderPosition());
+            SmartDashboard.putNumber("Error", climber.getEncoderPosition() - setpoint);
         }
-        SmartDashboard.putNumber("Encoder Position", climber.getEncoderPosition());
-        SmartDashboard.putNumber("Error", climber.getEncoderPosition() - setpoint);
     }
 
-    public void getTunedValues() {
-        System.out.println("F Gain" + kf);
-        System.out.println("P Gain" + kp);
-        System.out.println("I Gain" + ki);
-        System.out.println("D Gain" + kd);
-        System.out.println("Enjoy ;)");
+    public void getTunedValues(boolean isTuningMode) {
+        if (isTuningMode) {
+            System.out.println("F Gain" + kf);
+            System.out.println("P Gain" + kp);
+            System.out.println("I Gain" + ki);
+            System.out.println("D Gain" + kd);
+            System.out.println("Enjoy ;)");
+        }
     }
 }

@@ -60,7 +60,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void disabledPeriodic() {
-        m_robotTuner.getTunedValues();
+        m_robotTuner.getTunedValues(Constants.tuningMode);
     }
 
     /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
@@ -93,7 +93,7 @@ public class Robot extends TimedRobot {
     /** This function is called periodically during operator control. */
     @Override
     public void teleopPeriodic() {
-        m_robotTuner.Tune();
+        m_robotTuner.Tune(Constants.tuningMode);
     }
 
     @Override
