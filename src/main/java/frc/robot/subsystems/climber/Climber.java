@@ -3,9 +3,8 @@ package frc.robot.subsystems.climber;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Climber extends SubsystemBase {
-    public static final double maxEncoderValue = 0.0;
 
-    public double kP = 0, kI = 0, kD = 0, kF = 0;
+    private double kP = 0, kI = 0, kD = 0, kF = 0;
     private final ClimberIO climberIO;
     private final ClimberPistonIO pistonIO;
 

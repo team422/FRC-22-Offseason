@@ -19,9 +19,9 @@ public class PIDTuning {
     }
 
     private void shuffleBoardMagik() {
-        SmartDashboard.putNumber("P Gain", climber.kP);
-        SmartDashboard.putNumber("I Gain", climber.kI);
-        SmartDashboard.putNumber("D Gain", climber.kD);
+        SmartDashboard.putNumber("P Gain", kp);
+        SmartDashboard.putNumber("I Gain", ki);
+        SmartDashboard.putNumber("D Gain", kd);
     }
 
     public void Tune() {
@@ -50,5 +50,13 @@ public class PIDTuning {
         }
         SmartDashboard.putNumber("Encoder Position", climber.getEncoderPosition());
         SmartDashboard.putNumber("Error", climber.getEncoderPosition() - setpoint);
+    }
+
+    public void getTunedValues() {
+        System.out.println("F Gain" + kf);
+        System.out.println("P Gain" + kp);
+        System.out.println("I Gain" + ki);
+        System.out.println("D Gain" + kd);
+        System.out.println("Enjoy ;)");
     }
 }
