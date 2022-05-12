@@ -2,7 +2,7 @@ package frc.util;
 
 public class TalonFXUtils {
 
-    public static final double TICKS_PER_REVOLUTION = 2048;
+    public static final int TICKS_PER_REVOLUTION = 2048;
 
     /**
      * Converts ticks per 100ms to rotations per minute.
