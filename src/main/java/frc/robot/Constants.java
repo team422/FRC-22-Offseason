@@ -39,7 +39,7 @@ public final class Constants {
     // General Constants
     public static final BotType bot = BotType.ROBOT_2022_COMP;
     public static double loopPeriodSecs = 0.02;
-    public static boolean tuningMode = false;
+    public static boolean tuningMode = true;
 
     // Drivebase Constants
     public static final DriveMode mode = DriveMode.ARCADE;

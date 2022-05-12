@@ -2,6 +2,7 @@ package frc.robot.subsystems.climber;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.TalonFXSensorCollection;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 public class ClimberIOFalcon implements ClimberIO {
@@ -13,10 +14,13 @@ public class ClimberIOFalcon implements ClimberIO {
     private final WPI_TalonFX leftClimberMotor;
     private final WPI_TalonFX rightClimberMotor;
 
+    private TalonFXSensorCollection encoderBoi;
+
     public ClimberIOFalcon() {
         this.leftClimberMotor = new WPI_TalonFX(leftClimberPort);
         this.rightClimberMotor = new WPI_TalonFX(rightClimberPort);
         rightClimberMotor.setInverted(true);
+        encoderBoi = leftClimberMotor.getSensorCollection();
     }
 
     @Override
@@ -65,5 +69,10 @@ public class ClimberIOFalcon implements ClimberIO {
     @Override
     public void setLeftPercent(double power) {
         leftClimberMotor.set(ControlMode.PercentOutput, power);
+    }
+
+    @Override
+    public double getEncoderPosition() {
+        return encoderBoi.getIntegratedSensorPosition();
     }
 }

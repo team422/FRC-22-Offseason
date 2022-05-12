@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Climber extends SubsystemBase {
     public static final double maxEncoderValue = 0.0;
 
+    public double kP = 0, kI = 0, kD = 0, kF = 0;
     private final ClimberIO climberIO;
     private final ClimberPistonIO pistonIO;
 
@@ -12,11 +13,12 @@ public class Climber extends SubsystemBase {
         this.climberIO = climberIO;
         this.pistonIO = pistonIO;
 
+        setClimberPID(kF, kP, kI, kD);
         setBrakeMode(true);
     }
 
-    public void setClimberPID(double kF, double kP, double kI, double kD) {
-        climberIO.setPID(kF, kP, kI, kD);
+    public void setClimberPID(double F, double P, double I, double D) {
+        climberIO.setPID(F, P, I, D);
     }
 
     public void setBrakeMode(boolean enable) {
@@ -57,5 +59,9 @@ public class Climber extends SubsystemBase {
         } else {
             pistonIO.tiltRobot(true);
         }
+    }
+
+    public double getEncoderPosition() {
+        return climberIO.getEncoderPosition();
     }
 }

@@ -7,7 +7,6 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.commands.climbcommands.ClimberPIDPos;
 import frc.robot.commands.climbcommands.TeleClimbDown;
 import frc.robot.commands.climbcommands.TeleClimbDownLeft;
 import frc.robot.commands.climbcommands.TeleClimbDownRight;
@@ -34,7 +33,6 @@ import frc.robot.subsystems.climber.ClimberPistonIO;
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
     private Climber climber;
-    private boolean climbMode;
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -42,8 +40,6 @@ public class RobotContainer {
     public RobotContainer() {
         // Initialize Subsystems
         configureSubsystems();
-
-        this.climbMode = false;
 
         // Configure the button bindings
         configureButtonBindings();
@@ -86,18 +82,12 @@ public class RobotContainer {
         TeleClimbUpRight climberUpRightCommand = new TeleClimbUpRight(climber);
         TeleClimbDownRight climberDownRightCommand = new TeleClimbDownRight(climber);
         TeleClimbTilt climmberTiltCommand = new TeleClimbTilt(climber);
-        ClimberPIDPos climberPIDPosTest = new ClimberPIDPos(climber);
 
         //binding things
         controls.getClimbUp().whileActiveOnce(climberUpCommand);
         controls.getClimbDown().whileActiveOnce(climberDownCommand);
         controls.getClimbButton().whenActive(climmberTiltCommand);
-        controls.getIntakeRunInButton().whileActiveOnce(climberPIDPosTest);
     }
-
-    // public boolean setClimbMode(boolean climbMode) {
-    //     return climbMode;
-    // }
 
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.

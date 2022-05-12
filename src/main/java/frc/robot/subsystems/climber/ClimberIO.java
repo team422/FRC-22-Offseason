@@ -25,4 +25,8 @@ public interface ClimberIO {
 
     public default void setPosition(double position) {
     }
+
+    public default double getEncoderPosition() {
+        return 0.0;
+    }
 }

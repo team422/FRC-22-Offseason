@@ -5,14 +5,16 @@ import frc.robot.subsystems.climber.Climber;
 
 public class ClimberPIDPos extends CommandBase {
     private final Climber climber;
+    private final double position;
 
-    public ClimberPIDPos(Climber climber) {
+    public ClimberPIDPos(Climber climber, double position) {
         this.climber = climber;
+        this.position = position;
     }
 
     @Override
     public void execute() {
-        climber.SetTarget(4086);
+        climber.SetTarget(position);
     }
 
     @Override
