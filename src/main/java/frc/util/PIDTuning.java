@@ -1,7 +1,5 @@
 package frc.util;
 
-import java.util.Random;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.climber.Climber;
 
@@ -14,16 +12,6 @@ public class PIDTuning {
     TunableNumber TunableD = new TunableNumber("D Gain", 0);
     TunableNumber TunableF = new TunableNumber("F Gain", 0);
     TunableNumber TunableSetPoint = new TunableNumber("Set Point", 0);
-    //meme things that may actually be applicable in testing. (rapid stress testing of PID loop)
-    Random AnkitsFait = new Random(); //random number generator
-    int counter = 0; //counter value, counts up every tick (0.02 sec) when a condition is or isn't met. Once it reaches a point then it will cause an if statement to fire
-    /**
-     * Story time about Ankits fait. There was once a build subteam lead named Ankit. When he was building the
-     * climb arms, he let go. The climb arms then flew into his forehead and caused him to bleed a little. 
-     * From then on out Ankit was immortalized as the man who was hit by a spring loaded climb arm.
-     * As tribute, this random number generator was named in his honor as it causes the climb arms or whatever
-     * you are tuning to randomly go to a position which may bonk someone's head.
-     */
 
     //variables that store the tunnable numbers in a usable form so they can be used later or printed later
     double setpoint = TunableSetPoint.get();
@@ -62,8 +50,6 @@ public class PIDTuning {
     //method that runs periodically to update things (put in teleopperiodic)
     public void Tune() {
         if (isTuningMode) {
-            //checks if ankit mode (random mode to stress test)
-            boolean AnkitMode = SmartDashboard.getBoolean("Ankit Mode", false);
             //updates shuffle board
             shuffleBoardMagik();
 
@@ -72,18 +58,6 @@ public class PIDTuning {
             i = TunableI.get();
             d = TunableD.get();
             f = TunableF.get();
-
-            //memes, if Ankit mode is enabled, then it will produce a random int ever 100 ticks and set the motor to go to that point (can be used to test the viability of a PID loop)
-            if (AnkitMode) {
-                if (counter >= 100) {
-                    counter = 0;
-                    setpoint = AnkitsFait.nextInt(TalonFXUtils.TICKS_PER_REVOLUTION * 4); //warning some mechanisms may not have enough room for 4 falcon 500 rotations, adjust accordingly
-                } else {
-                    counter++;
-                }
-            } else {
-                setpoint = TunableSetPoint.get();
-            }
         }
     }
 
