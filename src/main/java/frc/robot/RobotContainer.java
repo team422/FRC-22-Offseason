@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.util.AutoSwitcher;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -21,6 +22,8 @@ public class RobotContainer {
     private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
     private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
+
+    private final AutoSwitcher m_autoSwitcher = new AutoSwitcher();
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
@@ -42,8 +45,9 @@ public class RobotContainer {
      *
      * @return the command to run in autonomous
      */
-    public Command getAutonomousCommand() {
-        // An ExampleCommand will run in autonomous
-        return m_autoCommand;
+    public Command updateAutoCommand() {
+        // grabs auto command and notifies and then gets
+        m_autoSwitcher.get();
+        return m_autoSwitcher.finalAuto;
     }
 }
