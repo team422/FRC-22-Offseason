@@ -54,6 +54,11 @@ public class ClimberIOFalcon implements ClimberIO {
     }
 
     @Override
+    public boolean isInPosPIDMode() {
+        return isClimberInPositionMode;
+    }
+
+    @Override
     public void setBrakeMode(boolean enable) {
         NeutralMode mode = enable ? NeutralMode.Brake : NeutralMode.Coast;
         leftClimberMotor.setNeutralMode(mode);

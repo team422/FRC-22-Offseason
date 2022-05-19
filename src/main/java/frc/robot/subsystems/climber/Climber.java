@@ -38,7 +38,13 @@ public class Climber extends SubsystemBase {
     }
 
     public void setVelocity(double velocity) {
+        climberIO.setPID(kFVel, kPVel, kIVel, kDVel, false);
         climberIO.setVelocity(velocity);
+    }
+
+    public void setVelocity(double velocity, double P, double I, double D, double F) {
+        climberIO.setPID(F, P, I, D, false);
+        climberIO.setTargetPoint(velocity);
     }
 
     // public void setRightVelocity(double velocity){
@@ -81,5 +87,11 @@ public class Climber extends SubsystemBase {
 
     public double getEncoderPosition() {
         return climberIO.getEncoderPosition();
+    }
+
+    /**gets what mode the PID controller is currently in*/
+    public void getClimberPIDMode() {
+        System.out.println("Current PID loops is in" +
+                (climberIO.isInPosPIDMode() ? "Position Mode" : "Velocity Mode"));
     }
 }

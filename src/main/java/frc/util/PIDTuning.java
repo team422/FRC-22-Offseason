@@ -2,7 +2,6 @@ package frc.util;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.climber.Climber;
-import frc.robot.subsystems.climber.ClimberIO;
 import frc.robot.subsystems.climber.ClimberIOFalcon;
 import frc.robot.subsystems.climber.ClimberPistonIO;
 
@@ -26,22 +25,29 @@ public class PIDTuning {
 
     //tuning mode boolean If this is false then tunning will not take place, the Tunable numbers will all return default values
     private final boolean isTuningMode;
+    private final boolean isTuningPosition;
 
-    public PIDTuning(boolean isTuningMode) {
+    public PIDTuning(boolean isTuningMode, boolean isTuningPosition) {
         this.isTuningMode = isTuningMode;
+        this.isTuningPosition = isTuningPosition;
         if (isTuningMode) {
             climber = new Climber(new ClimberIOFalcon(), new ClimberPistonIO());
             //shuffle board magik documentation below
             shuffleBoardMagik();
             //add listeners to the tunable numbers, these are consumers that will take in an input and perform an action using said input
-            TunableF.addChangeListener((val) -> climber.setClimberPositionPID(val, p, i, d));
-            TunableP.addChangeListener((val) -> climber.setClimberPositionPID(f, val, i, d));
-            TunableI.addChangeListener((val) -> climber.setClimberPositionPID(f, p, val, d));
-            TunableD.addChangeListener((val) -> climber.setClimberPositionPID(f, p, i, val));
-            TunableSetPoint.addChangeListener((val) -> climber.SetTarget(val, p, i, d, f)); //ex: takes in some double which is accepted when the value of the tunnable number changes and uses it to set the target set point.
-        } else {
-            climber = climber != null ? climber : new Climber(new ClimberIO() {
-            }, null);
+            if (isTuningPosition) {
+                TunableF.addChangeListener((val) -> climber.setClimberPositionPID(val, p, i, d));
+                TunableP.addChangeListener((val) -> climber.setClimberPositionPID(f, val, i, d));
+                TunableI.addChangeListener((val) -> climber.setClimberPositionPID(f, p, val, d));
+                TunableD.addChangeListener((val) -> climber.setClimberPositionPID(f, p, i, val));
+                TunableSetPoint.addChangeListener((val) -> climber.SetTarget(val, p, i, d, f)); //ex: takes in some double which is accepted when the value of the tunnable number changes and uses it to set the target set point.
+            } else {
+                TunableF.addChangeListener((val) -> climber.setClimberVelocityPID(val, p, i, d));
+                TunableP.addChangeListener((val) -> climber.setClimberVelocityPID(f, val, i, d));
+                TunableI.addChangeListener((val) -> climber.setClimberVelocityPID(f, p, val, d));
+                TunableD.addChangeListener((val) -> climber.setClimberVelocityPID(f, p, i, val));
+                TunableSetPoint.addChangeListener((val) -> climber.setVelocity(val));
+            }
         }
     }
 

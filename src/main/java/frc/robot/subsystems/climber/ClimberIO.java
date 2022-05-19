@@ -13,6 +13,10 @@ public interface ClimberIO {
         return 0.0;
     }
 
+    public default boolean isInPosPIDMode() {
+        return true;
+    }
+
     public default void setBrakeMode(boolean enable) {
     }
 
