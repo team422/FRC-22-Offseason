@@ -6,23 +6,32 @@ import frc.robot.subsystems.climber.Climber;
 public class ClimberPIDPos extends CommandBase {
     private final Climber climber;
     private final double position;
+    private final boolean approximationMode;
+    private boolean isAtSetPoint;
 
-    public ClimberPIDPos(Climber climber, double position) {
+    public ClimberPIDPos(Climber climber, double position, boolean approximationMode) {
         this.climber = climber;
         this.position = position;
+        this.approximationMode = approximationMode;
     }
 
     @Override
     public void execute() {
         climber.SetTarget(position);
+        isAtSetPoint = climber.isAtSetPoint();
     }
 
     @Override
     public void end(boolean interrupted) {
+        climber.setPercent(0);
     }
 
     @Override
     public boolean isFinished() {
-        return true;
+        if (approximationMode) {
+            return isAtSetPoint;
+        } else {
+            return false;
+        }
     }
 }

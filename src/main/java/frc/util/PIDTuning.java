@@ -2,8 +2,12 @@ package frc.util;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.climber.Climber;
+import frc.robot.subsystems.climber.ClimberIO;
+import frc.robot.subsystems.climber.ClimberIOFalcon;
+import frc.robot.subsystems.climber.ClimberPistonIO;
 
 public class PIDTuning {
+
     private Climber climber;
 
     //defines the tunnable numbers necessary for this to work
@@ -26,14 +30,18 @@ public class PIDTuning {
     public PIDTuning(boolean isTuningMode) {
         this.isTuningMode = isTuningMode;
         if (isTuningMode) {
+            climber = new Climber(new ClimberIOFalcon(), new ClimberPistonIO());
             //shuffle board magik documentation below
             shuffleBoardMagik();
             //add listeners to the tunable numbers, these are consumers that will take in an input and perform an action using said input
-            TunableF.addChangeListener((val) -> climber.setClimberPID(val, p, i, d));
-            TunableP.addChangeListener((val) -> climber.setClimberPID(f, val, i, d));
-            TunableI.addChangeListener((val) -> climber.setClimberPID(f, p, val, d));
-            TunableD.addChangeListener((val) -> climber.setClimberPID(f, p, i, val));
-            TunableSetPoint.addChangeListener((val) -> climber.SetTarget(val)); //ex: takes in some double which is accepted when the value of the tunnable number changes and uses it to set the target set point.
+            TunableF.addChangeListener((val) -> climber.setClimberPositionPID(val, p, i, d));
+            TunableP.addChangeListener((val) -> climber.setClimberPositionPID(f, val, i, d));
+            TunableI.addChangeListener((val) -> climber.setClimberPositionPID(f, p, val, d));
+            TunableD.addChangeListener((val) -> climber.setClimberPositionPID(f, p, i, val));
+            TunableSetPoint.addChangeListener((val) -> climber.SetTarget(val, p, i, d, f)); //ex: takes in some double which is accepted when the value of the tunnable number changes and uses it to set the target set point.
+        } else {
+            climber = climber != null ? climber : new Climber(new ClimberIO() {
+            }, null);
         }
     }
 

@@ -7,9 +7,13 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 public class ClimberIOFalcon implements ClimberIO {
     private static final double encoderTicksPerRev = 2048.0;
+    private static final double error = 10; //placeholder allowed error
 
     public static final int leftClimberPort = 15;
     public static final int rightClimberPort = 16;
+    public static boolean atSetPoint = false;
+    public static double setPoint = 0;
+    public static boolean isClimberInPositionMode = true;
 
     private final WPI_TalonFX leftClimberMotor;
     private final WPI_TalonFX rightClimberMotor;
@@ -24,7 +28,7 @@ public class ClimberIOFalcon implements ClimberIO {
     }
 
     @Override
-    public void setPID(double kf, double kp, double ki, double kd) {
+    public void setPID(double kf, double kp, double ki, double kd, boolean isPositionPID) {
         leftClimberMotor.config_kF(0, kf);
         leftClimberMotor.config_kP(0, kp);
         leftClimberMotor.config_kI(0, ki);
@@ -34,6 +38,19 @@ public class ClimberIOFalcon implements ClimberIO {
         rightClimberMotor.config_kP(0, kp);
         rightClimberMotor.config_kI(0, ki);
         rightClimberMotor.config_kD(0, kd);
+
+        isClimberInPositionMode = isPositionPID;
+    }
+
+    @Override
+    public boolean isAtSetPoint() {
+        double currentPosition = encoderBoi.getIntegratedSensorPosition();
+        return currentPosition <= setPoint + error && currentPosition >= setPoint + error ? true : false;
+    }
+
+    @Override
+    public double getSetPoint() {
+        return setPoint;
     }
 
     @Override
@@ -59,6 +76,7 @@ public class ClimberIOFalcon implements ClimberIO {
     public void setTargetPoint(double encoderValue) {
         leftClimberMotor.set(ControlMode.Position, encoderValue);
         rightClimberMotor.set(ControlMode.Position, encoderValue);
+        setPoint = encoderValue;
     }
 
     @Override

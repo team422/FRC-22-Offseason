@@ -4,7 +4,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Climber extends SubsystemBase {
 
-    private double kP = 0, kI = 0, kD = 0, kF = 0;
+    private double kPPos = 0, kIPos = 0, kDPos = 0, kFPos = 0;
+    private double kPVel = 0, kIVel = 0, kDVel = 0, kFVel = 0;
     private final ClimberIO climberIO;
     private final ClimberPistonIO pistonIO;
 
@@ -12,12 +13,24 @@ public class Climber extends SubsystemBase {
         this.climberIO = climberIO;
         this.pistonIO = pistonIO;
 
-        setClimberPID(kF, kP, kI, kD);
+        setClimberPositionPID(kFPos, kPPos, kIPos, kDPos);
         setBrakeMode(true);
     }
 
-    public void setClimberPID(double F, double P, double I, double D) {
-        climberIO.setPID(F, P, I, D);
+    public boolean isAtSetPoint() {
+        return climberIO.isAtSetPoint();
+    }
+
+    public double getCurrentSetPoint() {
+        return climberIO.getSetPoint();
+    }
+
+    public void setClimberPositionPID(double F, double P, double I, double D) {
+        climberIO.setPID(F, P, I, D, true);
+    }
+
+    public void setClimberVelocityPID(double F, double P, double I, double D) {
+        climberIO.setPID(F, P, I, D, false);
     }
 
     public void setBrakeMode(boolean enable) {
@@ -45,7 +58,13 @@ public class Climber extends SubsystemBase {
     }
 
     public void SetTarget(double encoderValue) {
+        climberIO.setPID(kFPos, kPPos, kIPos, kDPos, true);
         climberIO.setTargetPoint(encoderValue);
+    }
+
+    public void SetTarget(double ecnoderValue, double P, double I, double D, double F) {
+        climberIO.setPID(F, P, I, D, true);
+        climberIO.setTargetPoint(ecnoderValue);
     }
 
     // public void setRightTarget(double encoderValue) {

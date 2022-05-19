@@ -59,7 +59,7 @@ public class RobotContainer {
                 break;
         }
 
-        climber = climber != null ? climber : new Climber(new ClimberIO() {
+        climber = new Climber(new ClimberIO() {
         }, null);
     }
 
