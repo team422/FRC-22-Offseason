@@ -9,6 +9,13 @@ public interface ClimberIO {
         return false;
     }
 
+    public default boolean isAtSetPoint(double error) {
+        return false;
+    }
+
+    public default void setDefaultPosPIDError(double error) {
+    }
+
     public default double getSetPoint() {
         return 0.0;
     }

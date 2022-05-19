@@ -38,13 +38,17 @@ public class Climber extends SubsystemBase {
     }
 
     public void setVelocity(double velocity) {
-        climberIO.setPID(kFVel, kPVel, kIVel, kDVel, false);
+        if (climberIO.isInPosPIDMode()) {
+            climberIO.setPID(kFVel, kPVel, kIVel, kDVel, false);
+        }
         climberIO.setVelocity(velocity);
     }
 
     public void setVelocity(double velocity, double P, double I, double D, double F) {
-        climberIO.setPID(F, P, I, D, false);
-        climberIO.setTargetPoint(velocity);
+        if (climberIO.isInPosPIDMode()) {
+            climberIO.setPID(F, P, I, D, false);
+        }
+        climberIO.setVelocity(velocity);
     }
 
     // public void setRightVelocity(double velocity){
@@ -64,12 +68,16 @@ public class Climber extends SubsystemBase {
     }
 
     public void SetTarget(double encoderValue) {
-        climberIO.setPID(kFPos, kPPos, kIPos, kDPos, true);
+        if (!climberIO.isInPosPIDMode()) {
+            climberIO.setPID(kFPos, kPPos, kIPos, kDPos, true);
+        }
         climberIO.setTargetPoint(encoderValue);
     }
 
     public void SetTarget(double ecnoderValue, double P, double I, double D, double F) {
-        climberIO.setPID(F, P, I, D, true);
+        if (!climberIO.isInPosPIDMode()) {
+            climberIO.setPID(F, P, I, D, true);
+        }
         climberIO.setTargetPoint(ecnoderValue);
     }
 

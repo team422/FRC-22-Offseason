@@ -36,12 +36,14 @@ public class PIDTuning {
             shuffleBoardMagik();
             //add listeners to the tunable numbers, these are consumers that will take in an input and perform an action using said input
             if (isTuningPosition) {
+                climber.setClimberPositionPID(f, p, i, d);
                 TunableF.addChangeListener((val) -> climber.setClimberPositionPID(val, p, i, d));
                 TunableP.addChangeListener((val) -> climber.setClimberPositionPID(f, val, i, d));
                 TunableI.addChangeListener((val) -> climber.setClimberPositionPID(f, p, val, d));
                 TunableD.addChangeListener((val) -> climber.setClimberPositionPID(f, p, i, val));
-                TunableSetPoint.addChangeListener((val) -> climber.SetTarget(val, p, i, d, f)); //ex: takes in some double which is accepted when the value of the tunnable number changes and uses it to set the target set point.
+                TunableSetPoint.addChangeListener((val) -> climber.SetTarget(val)); //ex: takes in some double which is accepted when the value of the tunnable number changes and uses it to set the target set point.
             } else {
+                climber.setClimberVelocityPID(f, p, i, d);
                 TunableF.addChangeListener((val) -> climber.setClimberVelocityPID(val, p, i, d));
                 TunableP.addChangeListener((val) -> climber.setClimberVelocityPID(f, val, i, d));
                 TunableI.addChangeListener((val) -> climber.setClimberVelocityPID(f, p, val, d));
@@ -53,12 +55,8 @@ public class PIDTuning {
 
     //initializing and updating shuffle board (pretty graphs yay)
     private void shuffleBoardMagik() {
-        SmartDashboard.putNumber("P Gain", p);
-        SmartDashboard.putNumber("I Gain", i);
-        SmartDashboard.putNumber("D Gain", d);
         SmartDashboard.putNumber("Encoder Position", climber.getEncoderPosition());
         SmartDashboard.putNumber("Error", climber.getEncoderPosition() - setpoint); //gives how much overshoot/undershoot you have positive number means overshoot and negative means undershoot
-        SmartDashboard.putNumber("Set Point", setpoint);
     }
 
     //method that runs periodically to update things (put in teleopperiodic)
@@ -78,10 +76,10 @@ public class PIDTuning {
     //when tuning is terminated, print out the values you had so you don't lose your progress
     public void getTunedValues() {
         if (isTuningMode) {
-            System.out.println("F Gain" + p);
-            System.out.println("P Gain" + i);
-            System.out.println("I Gain" + d);
-            System.out.println("D Gain" + f);
+            System.out.println("F Gain" + f);
+            System.out.println("P Gain" + p);
+            System.out.println("I Gain" + i);
+            System.out.println("D Gain" + d);
             System.out.println("Enjoy ;)");
         }
     }
