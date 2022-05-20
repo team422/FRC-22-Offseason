@@ -5,10 +5,10 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.SPI;
+import frc.mechtechsupport.modules.SwerveModuleConfig;
+import frc.mechtechsupport.modules.SwerveOdometer;
+import frc.mechtechsupport.util.SwerveModuleMath;
 import frc.robot.Constants;
-import frc.util.SwerveModuleConfig;
-import frc.util.SwerveModuleMath;
-import frc.util.SwerveOdometer;
 
 public class SwerveDriveIO implements DriveIO {
 
@@ -122,7 +122,7 @@ public class SwerveDriveIO implements DriveIO {
         double speedFR = frontRight.getDriveVelocity();
         double speedFL = frontLeft.getDriveVelocity();
         double speedBR = backRight.getDriveVelocity();
-        double soeedBL = backLeft.getDriveVelocity();
+        double speedBL = backLeft.getDriveVelocity();
         //Angles of the wheels (0, 360)
         double heading = getHeading();
         double angleFR = frontRight.getAngle() + heading;
@@ -136,8 +136,8 @@ public class SwerveDriveIO implements DriveIO {
         double FLY = SwerveModuleMath.getYHeading(angleFL) * speedFL;
         double BRX = SwerveModuleMath.getXHeading(angleBR) * speedBR;
         double BRY = SwerveModuleMath.getYHeading(angleBR) * speedBR;
-        double BLX = SwerveModuleMath.getXHeading(angleBL) * soeedBL;
-        double BLY = SwerveModuleMath.getYHeading(angleBL) * soeedBL;
+        double BLX = SwerveModuleMath.getXHeading(angleBL) * speedBL;
+        double BLY = SwerveModuleMath.getYHeading(angleBL) * speedBL;
 
         //vector magik
         double OdometricX = (FRX + FLX + BRX + BLX) / 4D;

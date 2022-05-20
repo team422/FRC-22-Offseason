@@ -1,4 +1,4 @@
-package frc.util;
+package frc.mechtechsupport.util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,20 +11,20 @@ import frc.robot.Constants;
  * Class for a tunable number. Gets value from dashboard in tuning mode, returns default if not or
  * value not in dashboard.
  */
-public class TunableNumber {
+public class TunableInt {
     private static final String tableKey = "TunableNumbers";
 
     private String key;
-    private double defaultValue;
-    private double previousValue = defaultValue;
-    private List<Consumer<Double>> consumers;
+    private int defaultValue;
+    private int previousValue = defaultValue;
+    private List<Consumer<Integer>> consumers;
 
     /**
      * Create a new TunableNumber
      * 
      * @param dashboardKey Key on dashboard
      */
-    public TunableNumber(String dashboardKey) {
+    public TunableInt(String dashboardKey) {
         this.key = tableKey + "/" + dashboardKey;
     }
 
@@ -34,7 +34,7 @@ public class TunableNumber {
      * @param dashboardKey Key on dashboard
      * @param defaultValue Default value
      */
-    public TunableNumber(String dashboardKey, double defaultValue) {
+    public TunableInt(String dashboardKey, int defaultValue) {
         this(dashboardKey);
         setDefault(defaultValue);
     }
@@ -44,7 +44,7 @@ public class TunableNumber {
      * 
      * @return The default value
      */
-    public double getDefault() {
+    public int getDefault() {
         return defaultValue;
     }
 
@@ -53,7 +53,7 @@ public class TunableNumber {
      * 
      * @param defaultValue The default value
      */
-    public void setDefault(double defaultValue) {
+    public void setDefault(int defaultValue) {
         this.defaultValue = defaultValue;
         if (Constants.tuningMode) {
             // This makes sure the data is on NetworkTables but will not change it
@@ -70,12 +70,12 @@ public class TunableNumber {
      * 
      * @return The current value
      */
-    public double get() {
+    public int get() {
         if (!Constants.tuningMode) {
             return defaultValue;
         }
 
-        double value = SmartDashboard.getNumber(key, defaultValue);
+        int value = (int) SmartDashboard.getNumber(key, defaultValue);
 
         if (value != previousValue) {
             previousValue = value;
@@ -85,7 +85,7 @@ public class TunableNumber {
         return value;
     }
 
-    public void addChangeListener(Consumer<Double> listener) {
+    public void addChangeListener(Consumer<Integer> listener) {
         if (listener == null) {
             return;
         }
@@ -97,7 +97,7 @@ public class TunableNumber {
         consumers.add(listener);
     }
 
-    private void notify(double value) {
+    private void notify(int value) {
         if (consumers == null) {
             return;
         }

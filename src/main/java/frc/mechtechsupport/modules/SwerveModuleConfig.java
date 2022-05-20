@@ -1,10 +1,11 @@
-package frc.util;
+package frc.mechtechsupport.modules;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXSensorCollection;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import frc.mechtechsupport.util.SwerveModuleMath;
 import frc.robot.Constants;
 
 public class SwerveModuleConfig {
