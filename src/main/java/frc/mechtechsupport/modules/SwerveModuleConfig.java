@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.mechtechsupport.util.SwerveModuleMath;
+import frc.mechtechsupport.util.TalonFXUtils;
 import frc.robot.Constants;
 
 public class SwerveModuleConfig {
@@ -19,7 +20,7 @@ public class SwerveModuleConfig {
     private TalonFXSensorCollection driveEncoder;
 
     //Steering objects for the Module (encoder will be analogInput OR canCoder)
-    public final WPI_TalonFX steer;
+    private final WPI_TalonFX steer;
     private TalonFXSensorCollection steerEncoder;
 
     //PID Vars
@@ -86,6 +87,15 @@ public class SwerveModuleConfig {
 
     public double getAbsoluteEncoderRad() {
         return Math.toRadians(getAngle());
+    }
+
+    public void setSteer(double heading) {
+        steer.set(ControlMode.Position,
+                TalonFXUtils.wheelDegreesToTicks(SwerveModuleMath.boundPM180(heading), Constants.steerGearRatio));
+    }
+
+    public void setDrive(double speed) {
+        steer.set(ControlMode.Velocity, speed);
     }
 
     public void setDesiredState(SwerveModuleState state) {

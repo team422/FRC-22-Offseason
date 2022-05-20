@@ -93,6 +93,7 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopPeriodic() {
         m_Tuner.Tune();
+        m_Tuner.shuffleboardMagik();
     }
 
     @Override

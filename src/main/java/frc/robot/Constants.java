@@ -44,7 +44,8 @@ public final class Constants {
 
     // Drivebase Constants
     public static final DriveMode mode = DriveMode.ARCADE;
-    public static double driveGearRatio = 6.75;
+    public static double steerGearRatio = 1.0;
+    public static double driveGearRatio = 1.0;
 
     // Shooter Constants
     public static final double SHOOTER_UP_RPM = 2150; // Distance is x feet to close bumper

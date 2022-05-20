@@ -26,11 +26,13 @@ public class PIDTuning {
     private static TunableNumber tunableSteerD;
     private static TunableNumber tunableSteerF;
     private static TunableInt tunableSteerID;
+    private static TunableNumber tunableHeading;
     private static TunableNumber tunableDriveP;
     private static TunableNumber tunableDriveI;
     private static TunableNumber tunableDriveD;
     private static TunableNumber tunableDriveF;
     private static TunableInt tunableDriveID;
+    private static TunableNumber tunableSpeed;
 
     public PIDTuning() {
         if (Constants.tuningMode) {
@@ -70,6 +72,8 @@ public class PIDTuning {
         tunableDriveD = new TunableNumber("Drive Motor D Gain", 0);
         tunableSteerF = new TunableNumber("Steer Motor F Gain", 0);
         tunableDriveF = new TunableNumber("Drive Motor F Gain", 0);
+        tunableHeading = new TunableNumber("Heading set point", 0);
+        tunableSpeed = new TunableNumber("Speed set point", 0);
     }
 
     private void changeListener() {
@@ -85,6 +89,8 @@ public class PIDTuning {
         tunableDriveD.addChangeListener((val) -> module.configDrivePID(pDrive, iDrive, val, fDrive));
         tunableSteerF.addChangeListener((val) -> module.configSteerPID(pSteer, iSteer, dSteer, val));
         tunableDriveF.addChangeListener((val) -> module.configDrivePID(pDrive, iDrive, dDrive, val));
+        tunableHeading.addChangeListener((val) -> module.setSteer(val));
+        tunableSpeed.addChangeListener((val) -> module.setDrive(val));
     }
 
     public void Tune() {
@@ -99,6 +105,10 @@ public class PIDTuning {
             fDrive = tunableDriveF.get();
             driveID = tunableDriveID.get();
             steerID = tunableSteerID.get();
+            setPointVel = tunableSpeed.get();
+            setPointPos = tunableHeading.get();
+            errorVel = setPointVel - module.getDriveVelocity();
+            errorPos = setPointPos - module.getAngle();
         }
     }
 

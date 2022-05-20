@@ -29,4 +29,8 @@ public class TalonFXUtils {
     public static double ticksToMeters(double ticks, double gearRatio, double wheelRadius) {
         return (ticks / TICKS_PER_REVOLUTION) * (2 * Math.PI * wheelRadius) * (1 / gearRatio);
     }
+
+    public static double wheelDegreesToTicks(double degrees, double gearRatio) {
+        return (degrees * 360.0 * gearRatio / 2048);
+    }
 }
