@@ -61,7 +61,7 @@ public class SwerveDriveIO implements DriveIO {
     public SwerveDriveIO() {
         switch (Constants.bot) {
             case SWERVEPROTOTYPE:
-                this.odometer = new SwerveOdometer();
+                odometer = new SwerveOdometer();
                 frontRight = new SwerveModuleConfig(1, 5, 45, kPSteerFR, kISteerFR, kDSteerFR, kFSteerFR, kPDriveFR,
                         kIDriveFR, kDDriveFR, kFDriveFR);
                 frontLeft = new SwerveModuleConfig(2, 6, -45, kPSteerFL, kISteerFL, kDSteerFL, kFSteerFL, kPDriveFL,
