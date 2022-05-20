@@ -7,9 +7,11 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.commands.SwerveDrive;
 import frc.robot.oi.MixedXboxJoystickControls;
 import frc.robot.oi.UserControls;
-import frc.robot.subsystems.climber.Climber;
+import frc.robot.subsystems.drive.DriveBase;
+import frc.robot.subsystems.drive.SwerveDriveIO;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -22,7 +24,7 @@ import frc.robot.subsystems.climber.Climber;
  */
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
-    private Climber climber;
+    private DriveBase drive;
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -38,6 +40,7 @@ public class RobotContainer {
     private void configureSubsystems() {
         switch (Constants.bot) {
             case SWERVEPROTOTYPE:
+                drive = new DriveBase(new SwerveDriveIO());
             default:
                 System.out.println("No robot selected.");
                 break;
@@ -54,6 +57,11 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
         UserControls controls = new MixedXboxJoystickControls(0, 1, 5);
+
+        SwerveDrive defaultDriveCommand = new SwerveDrive(drive, () -> -controls.getLeftDriveY(),
+                () -> controls.getLeftDriveX(), () -> controls.getRightDriveX());
+
+        drive.setDefaultCommand(defaultDriveCommand);
     }
 
     /**
