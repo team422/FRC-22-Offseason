@@ -36,10 +36,10 @@ public class SwerveDrive extends CommandBase {
 
     @Override
     public void execute() {
-        runSwerve(true);
+        runSwerve();
     }
 
-    private void runSwerve(boolean fieldOriented) {
+    private void runSwerve() {
         double xSpeed = Xspeed.get();
         double ySpeed = Yspeed.get();
         double turningSpeed = rot.get() * (0.5);
