@@ -79,14 +79,14 @@ public class SwerveDriveIO implements DriveIO {
 
     @Override
     public void setSteerPID(double[] Pcontainer, double[] Icontainer, double[] Dcontainer, double[] Fcontainer) {
-        for (int i = 0; i < moduleContainer.length; i++) {
+        for (int i = 0; i < moduleContainer.length - 1; i++) {
             moduleContainer[i].configSteerPID(Pcontainer[i], Icontainer[i], Dcontainer[i], Fcontainer[i]);
         }
     }
 
     @Override
     public void setDrivePID(double[] Pcontainer, double[] Icontainer, double[] Dcontainer, double[] Fcontainer) {
-        for (int i = 0; i < moduleContainer.length; i++) {
+        for (int i = 0; i < moduleContainer.length - 1; i++) {
             moduleContainer[i].configDrivePID(Pcontainer[i], Icontainer[i], Dcontainer[i], Fcontainer[i]);
         }
     }
