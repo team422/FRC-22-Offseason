@@ -12,7 +12,6 @@ public class ClimberIOFalcon implements ClimberIO {
     public static final int leftClimberPort = 15;
     public static final int rightClimberPort = 16;
     private static double setPoint = 0;
-    private static boolean isClimberInPositionMode = true;
 
     private final WPI_TalonFX leftClimberMotor;
     private final WPI_TalonFX rightClimberMotor;
@@ -37,17 +36,28 @@ public class ClimberIOFalcon implements ClimberIO {
      */
     @Override
     public void setPID(double kf, double kp, double ki, double kd, boolean isPositionPID) {
-        leftClimberMotor.config_kF(0, kf);
-        leftClimberMotor.config_kP(0, kp);
-        leftClimberMotor.config_kI(0, ki);
-        leftClimberMotor.config_kD(0, kd);
+        int id = isPositionPID ? 1 : 0;
+        leftClimberMotor.config_kF(id, kf);
+        leftClimberMotor.config_kP(id, kp);
+        leftClimberMotor.config_kI(id, ki);
+        leftClimberMotor.config_kD(id, kd);
 
-        rightClimberMotor.config_kF(0, kf);
-        rightClimberMotor.config_kP(0, kp);
-        rightClimberMotor.config_kI(0, ki);
-        rightClimberMotor.config_kD(0, kd);
+        rightClimberMotor.config_kF(id, kf);
+        rightClimberMotor.config_kP(id, kp);
+        rightClimberMotor.config_kI(id, ki);
+        rightClimberMotor.config_kD(id, kd);
+    }
 
-        isClimberInPositionMode = isPositionPID;
+    @Override
+    public void configurePositionPID() {
+        leftClimberMotor.selectProfileSlot(1, 0);
+        rightClimberMotor.selectProfileSlot(1, 0);
+    }
+
+    @Override
+    public void configureVelocityPID() {
+        leftClimberMotor.selectProfileSlot(0, 0);
+        rightClimberMotor.selectProfileSlot(0, 0);
     }
 
     /**
@@ -86,14 +96,6 @@ public class ClimberIOFalcon implements ClimberIO {
     @Override
     public double getSetPoint() {
         return setPoint;
-    }
-
-    /**
-     * @return is the PID loop in position (true) or velocity (false) mode
-     */
-    @Override
-    public boolean isInPosPIDMode() {
-        return isClimberInPositionMode;
     }
 
     /**

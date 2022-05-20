@@ -14,6 +14,7 @@ public class Climber extends SubsystemBase {
         this.pistonIO = pistonIO;
 
         setClimberPositionPID(kFPos, kPPos, kIPos, kDPos);
+        setClimberVelocityPID(kFVel, kPVel, kIVel, kDVel);
         setBrakeMode(true);
     }
 
@@ -29,6 +30,14 @@ public class Climber extends SubsystemBase {
         climberIO.setPID(F, P, I, D, true);
     }
 
+    public void configurePositionPID() {
+        climberIO.configurePositionPID();
+    }
+
+    public void configureVelocityPID() {
+        climberIO.configureVelocityPID();
+    }
+
     public void setClimberVelocityPID(double F, double P, double I, double D) {
         climberIO.setPID(F, P, I, D, false);
     }
@@ -38,16 +47,7 @@ public class Climber extends SubsystemBase {
     }
 
     public void setVelocity(double velocity) {
-        if (climberIO.isInPosPIDMode()) {
-            climberIO.setPID(kFVel, kPVel, kIVel, kDVel, false);
-        }
-        climberIO.setVelocity(velocity);
-    }
-
-    public void setVelocity(double velocity, double P, double I, double D, double F) {
-        if (climberIO.isInPosPIDMode()) {
-            climberIO.setPID(F, P, I, D, false);
-        }
+        climberIO.configureVelocityPID();
         climberIO.setVelocity(velocity);
     }
 
@@ -68,22 +68,9 @@ public class Climber extends SubsystemBase {
     }
 
     public void SetTarget(double encoderValue) {
-        if (!climberIO.isInPosPIDMode()) {
-            climberIO.setPID(kFPos, kPPos, kIPos, kDPos, true);
-        }
+        climberIO.configurePositionPID();
         climberIO.setTargetPoint(encoderValue);
     }
-
-    public void SetTarget(double ecnoderValue, double P, double I, double D, double F) {
-        if (!climberIO.isInPosPIDMode()) {
-            climberIO.setPID(F, P, I, D, true);
-        }
-        climberIO.setTargetPoint(ecnoderValue);
-    }
-
-    // public void setRightTarget(double encoderValue) {
-    //     rightClimberIO.setTargetPoint(encoderValue);
-    // }
 
     public void tiltRobot() {
         if (pistonIO.getTilt()) {

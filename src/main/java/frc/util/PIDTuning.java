@@ -37,6 +37,7 @@ public class PIDTuning {
             //add listeners to the tunable numbers, these are consumers that will take in an input and perform an action using said input
             if (isTuningPosition) {
                 climber.setClimberPositionPID(f, p, i, d);
+                climber.configurePositionPID();
                 TunableF.addChangeListener((val) -> climber.setClimberPositionPID(val, p, i, d));
                 TunableP.addChangeListener((val) -> climber.setClimberPositionPID(f, val, i, d));
                 TunableI.addChangeListener((val) -> climber.setClimberPositionPID(f, p, val, d));
@@ -44,6 +45,7 @@ public class PIDTuning {
                 TunableSetPoint.addChangeListener((val) -> climber.SetTarget(val)); //ex: takes in some double which is accepted when the value of the tunnable number changes and uses it to set the target set point.
             } else {
                 climber.setClimberVelocityPID(f, p, i, d);
+                climber.configureVelocityPID();
                 TunableF.addChangeListener((val) -> climber.setClimberVelocityPID(val, p, i, d));
                 TunableP.addChangeListener((val) -> climber.setClimberVelocityPID(f, val, i, d));
                 TunableI.addChangeListener((val) -> climber.setClimberVelocityPID(f, p, val, d));
@@ -76,6 +78,7 @@ public class PIDTuning {
     //when tuning is terminated, print out the values you had so you don't lose your progress
     public void getTunedValues() {
         if (isTuningMode) {
+            System.out.println(isTuningPosition ? "Position controller" : "Velocity Controller");
             System.out.println("F Gain" + f);
             System.out.println("P Gain" + p);
             System.out.println("I Gain" + i);

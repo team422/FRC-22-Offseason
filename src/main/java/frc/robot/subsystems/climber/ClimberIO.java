@@ -5,6 +5,12 @@ public interface ClimberIO {
     public default void setPID(double kf, double kp, double ki, double kd, boolean isPositionPID) {
     }
 
+    public default void configurePositionPID() {
+    }
+
+    public default void configureVelocityPID() {
+    }
+
     public default boolean isAtSetPoint() {
         return false;
     }
