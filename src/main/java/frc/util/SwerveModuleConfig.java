@@ -55,10 +55,10 @@ public class SwerveModuleConfig {
         drive.config_kI(0, kIDrive);
         drive.config_kD(0, kDDrive);
         drive.config_kF(0, kFDrive);
-        steer.config_kP(0, kPDrive);
-        steer.config_kI(0, kIDrive);
-        steer.config_kD(0, kDDrive);
-        steer.config_kF(0, kFDrive);
+        steer.config_kP(0, kPSteer);
+        steer.config_kI(0, kISteer);
+        steer.config_kD(0, kDSteer);
+        steer.config_kF(0, kFSteer);
 
         //Encoder Config
         driveEncoder = drive.getSensorCollection();
