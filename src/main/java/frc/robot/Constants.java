@@ -24,7 +24,7 @@ import frc.util.TunableNumber;
 public final class Constants {
 
     public enum BotType {
-        ROBOT_2022_COMP, ROBOT_2022_PRACTICE
+        SWERVEPROTOTYPE
     }
 
     public enum DriveMode {
@@ -35,9 +35,10 @@ public final class Constants {
     public static final double BALL_HEIGHT_METERS = 0.2;
     public static final double HUB_HIGH_HEIGHT_METERS = Units.feetToMeters(8.667);
     public static final double HUB_LOW_HEIGHT_METERS = 1.5;
+    public static final double encoderTalonFXTicksPerRev = 2048.0;
 
     // General Constants
-    public static final BotType bot = BotType.ROBOT_2022_COMP;
+    public static final BotType bot = BotType.SWERVEPROTOTYPE;
     public static double loopPeriodSecs = 0.02;
     public static boolean tuningMode = true;
 
