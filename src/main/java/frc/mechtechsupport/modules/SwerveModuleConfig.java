@@ -105,10 +105,18 @@ public class SwerveModuleConfig {
             return;
         }
         double target = state.angle.getDegrees();
-        double Angle = SwerveModuleMath.boundPM180(target - getAngle());
-        double pos = steer.getSelectedSensorPosition() + (-Angle) * (Constants.encoderTalonFXTicksPerRev / 360);
-        steer.set(ControlMode.Position, pos);
-        drive.set(ControlMode.Velocity, state.speedMetersPerSecond);
+        double angle = SwerveModuleMath.boundPM180(target - getAngle());
+        double invAngle = SwerveModuleMath.boundPM180(target + 180 - getAngle());
+        double optomizedAngleMagnitude = Math.min(Math.abs(angle), Math.abs(invAngle));
+        if (Math.abs(angle) != optomizedAngleMagnitude) {
+            double pos = steer.getSelectedSensorPosition() + (invAngle) * (Constants.encoderTalonFXTicksPerRev / 360);
+            steer.set(ControlMode.Position, pos);
+            drive.set(ControlMode.Velocity, -state.speedMetersPerSecond);
+        } else {
+            double pos = steer.getSelectedSensorPosition() + (angle) * (Constants.encoderTalonFXTicksPerRev / 360);
+            steer.set(ControlMode.Position, pos);
+            drive.set(ControlMode.Velocity, state.speedMetersPerSecond);
+        }
     }
 
     public void resetEncoders() {
@@ -117,7 +125,7 @@ public class SwerveModuleConfig {
 
     public double getAngle() {
         double ang = steerEncoder.getIntegratedSensorPosition();
-        ang = ang * 360 / Constants.encoderTalonFXTicksPerRev + degOffSet + 90; //Compassify
+        ang = ang * 360 / Constants.encoderTalonFXTicksPerRev + degOffSet; //Compassify
         if (ang > 360) {
             ang -= 360;
         }

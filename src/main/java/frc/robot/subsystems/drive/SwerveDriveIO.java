@@ -140,8 +140,8 @@ public class SwerveDriveIO implements DriveIO {
         double BLY = SwerveModuleMath.getYHeading(angleBL) * speedBL;
 
         //vector magik
-        double OdometricX = (FRX + FLX + BRX + BLX) / 4D;
-        double OdometricY = (FRY + FLY + BRY + BLY) / 4D;
+        double OdometricX = (FRX + FLX + BRX + BLX) / 4.0;
+        double OdometricY = (FRY + FLY + BRY + BLY) / 4.0;
 
         double deltaY = OdometricX * Constants.loopPeriodSecs;
         double deltaX = OdometricY * Constants.loopPeriodSecs;

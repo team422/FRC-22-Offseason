@@ -53,8 +53,8 @@ public class SwerveDrive extends CommandBase {
         turningSpeed = turningLimiter.calculate(turningSpeed) * Math.PI * 2;
 
         ChassisSpeeds chassisSpeeds;
-        chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, turningSpeed,
-                Rotation2d.fromDegrees(drive.getHeading()));
+        chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(ySpeed, xSpeed, turningSpeed,
+                Rotation2d.fromDegrees(-drive.getHeading()));
 
         drive.setStates(SwerveModuleMath.swerveMagik.toSwerveModuleStates(chassisSpeeds));
     }
