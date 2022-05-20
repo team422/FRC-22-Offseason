@@ -163,7 +163,7 @@ public class SwerveDriveIO implements DriveIO {
 
     @Override
     public void setStates(SwerveModuleState[] stateContainer) {
-        for (int i = 0; i < moduleContainer.length; i++) {
+        for (int i = 0; i < moduleContainer.length - 1; i++) {
             moduleContainer[i].setDesiredState(stateContainer[i]);
         }
     }
