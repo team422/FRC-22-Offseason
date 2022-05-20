@@ -1,5 +1,9 @@
 package frc.util;
 
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.util.Units;
+
 public class SwerveModuleMath {
     public static double restrictAngle(double angle) {
         while (angle > 360) {
@@ -10,6 +14,13 @@ public class SwerveModuleMath {
         }
         return angle;
     }
+
+    public static final SwerveDriveKinematics swerveMagik = new SwerveDriveKinematics(
+            new Translation2d(Units.inchesToMeters(24) / 2, Units.inchesToMeters(24) / 2), //FR
+            new Translation2d(Units.inchesToMeters(24) / 2, -Units.inchesToMeters(24) / 2), //FL
+            new Translation2d(-Units.inchesToMeters(24) / 2, Units.inchesToMeters(24) / 2), //BR
+            new Translation2d(-Units.inchesToMeters(24) / 2, -Units.inchesToMeters(24) / 2) //BL
+    );
 
     public static double boundPM180(double angle) {
         while (angle >= 180.0)

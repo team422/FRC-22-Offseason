@@ -1,5 +1,6 @@
 package frc.robot.subsystems.drive;
 
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class DriveBase extends SubsystemBase {
@@ -21,6 +22,18 @@ public class DriveBase extends SubsystemBase {
 
     public void setSteerPID(double[] p, double[] i, double[] d, double[] f) {
         driveIO.setDrivePID(p, i, d, f);
+    }
+
+    public void setStates(SwerveModuleState[] states) {
+        driveIO.setStates(states);
+    }
+
+    public void stop() {
+        driveIO.stap();
+    }
+
+    public double getHeading() {
+        return driveIO.getHeading();
     }
 
     public double getGyroAngle() {
