@@ -10,9 +10,6 @@ import frc.mechtechsupport.util.TalonFXUtils;
 import frc.robot.Constants;
 
 public class SwerveModuleConfig {
-    //Module Variables
-    private final int idDrive;
-    private final int idSteer;
     private final double degOffSet;
 
     //Drive objects for the Module
@@ -23,30 +20,10 @@ public class SwerveModuleConfig {
     private final WPI_TalonFX steer;
     private TalonFXSensorCollection steerEncoder;
 
-    //PID Vars
-    private double kPSteer;
-    private double kISteer;
-    private double kDSteer;
-    private double kFSteer;
-    private double kPDrive;
-    private double kIDrive;
-    private double kDDrive;
-    private double kFDrive;
-
     public SwerveModuleConfig(int idDrive, int idSteer, double degOffSet, double kPSteer,
             double kISteer, double kDSteer, double kFSteer, double kPDrive, double kIDrive, double kDDrive,
             double kFDrive) {
-        this.idDrive = idDrive;
-        this.idSteer = idSteer;
         this.degOffSet = degOffSet;
-        this.kPSteer = kPSteer;
-        this.kISteer = kISteer;
-        this.kDSteer = kDSteer;
-        this.kFSteer = kFSteer;
-        this.kPDrive = kPDrive;
-        this.kIDrive = kIDrive;
-        this.kDDrive = kDDrive;
-        this.kFDrive = kFDrive;
 
         //Motor Config
         drive = new WPI_TalonFX(idDrive);
@@ -105,18 +82,18 @@ public class SwerveModuleConfig {
             return;
         }
         double target = state.angle.getDegrees();
-        double angle = SwerveModuleMath.boundPM180(target - getAngle());
-        double invAngle = SwerveModuleMath.boundPM180(target + 180 - getAngle());
-        double optomizedAngleMagnitude = Math.min(Math.abs(angle), Math.abs(invAngle));
-        if (Math.abs(angle) != optomizedAngleMagnitude) {
-            double pos = steer.getSelectedSensorPosition() + (invAngle) * (Constants.encoderTalonFXTicksPerRev / 360);
-            steer.set(ControlMode.Position, pos);
-            drive.set(ControlMode.Velocity, -state.speedMetersPerSecond);
-        } else {
-            double pos = steer.getSelectedSensorPosition() + (angle) * (Constants.encoderTalonFXTicksPerRev / 360);
-            steer.set(ControlMode.Position, pos);
-            drive.set(ControlMode.Velocity, state.speedMetersPerSecond);
-        }
+        optomizedDrive(target, state.speedMetersPerSecond);
+    }
+
+    private void optomizedDrive(double targetAng, double speed) {
+        double deltaAngle = SwerveModuleMath.boundPM180(targetAng - getAngle());
+        double invDeltaAngle = SwerveModuleMath.boundPM180(targetAng - getAngle() + 180);
+        double optomizedAngleMagnitude = Math.min(Math.abs(deltaAngle), Math.abs(invDeltaAngle));
+        double trueAngle = Math.abs(deltaAngle) == optomizedAngleMagnitude ? deltaAngle : invDeltaAngle;
+        boolean isInvert = Math.abs(deltaAngle) == optomizedAngleMagnitude ? false : true;
+        double setPoint = steer.getSelectedSensorPosition() + trueAngle * Constants.encoderTalonFXTicksPerRev / 360.0;
+        steer.set(ControlMode.Position, setPoint);
+        drive.set(ControlMode.Velocity, isInvert ? -speed : speed);
     }
 
     public void resetEncoders() {

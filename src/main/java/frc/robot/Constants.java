@@ -28,7 +28,7 @@ public final class Constants {
     }
 
     public enum DriveMode {
-        TANK, ARCADE
+        OPTOMIZEDSWERVE, SADSWERVE
     }
 
     // Field Constants
@@ -41,9 +41,11 @@ public final class Constants {
     public static final BotType bot = BotType.SWERVEPROTOTYPE;
     public static double loopPeriodSecs = 0.02;
     public static boolean tuningMode = true;
+    public static final double botLengthIn = 24;
+    public static final double botWidthIn = 24;
 
     // Drivebase Constants
-    public static final DriveMode mode = DriveMode.ARCADE;
+    public static final DriveMode mode = DriveMode.OPTOMIZEDSWERVE;
     public static double steerGearRatio = 1.0;
     public static double driveGearRatio = 1.0;
 

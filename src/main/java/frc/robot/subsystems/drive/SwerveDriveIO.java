@@ -54,6 +54,7 @@ public class SwerveDriveIO implements DriveIO {
     public static double kIDriveBL = 0;
     public static double kDDriveBL = 0;
     public static double kFDriveBL = 0;
+    public static boolean isOptomized = true;
     private static SwerveOdometer odometer;
 
     private SwerveModuleConfig[] moduleContainer;

@@ -5,7 +5,6 @@ import frc.mechtechsupport.modules.SwerveModuleConfig;
 import frc.robot.Constants;
 
 public class PIDTuning {
-    //TODO: make PID Tuner for swerve
     private static double errorVel;
     private static double setPointVel;
     private static double errorPos;

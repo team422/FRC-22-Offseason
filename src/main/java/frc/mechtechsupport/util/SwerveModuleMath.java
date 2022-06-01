@@ -3,6 +3,7 @@ package frc.mechtechsupport.util;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
+import frc.robot.Constants;
 
 public class SwerveModuleMath {
     public static double restrictAngle(double angle) {
@@ -16,10 +17,14 @@ public class SwerveModuleMath {
     }
 
     public static final SwerveDriveKinematics swerveMagik = new SwerveDriveKinematics(
-            new Translation2d(Units.inchesToMeters(24) / 2, Units.inchesToMeters(24) / 2), //FR
-            new Translation2d(Units.inchesToMeters(24) / 2, -Units.inchesToMeters(24) / 2), //FL
-            new Translation2d(-Units.inchesToMeters(24) / 2, Units.inchesToMeters(24) / 2), //BR
-            new Translation2d(-Units.inchesToMeters(24) / 2, -Units.inchesToMeters(24) / 2) //BL
+            new Translation2d(Units.inchesToMeters(Constants.botLengthIn) / 2,
+                    -Units.inchesToMeters(Constants.botWidthIn) / 2), //FR
+            new Translation2d(Units.inchesToMeters(Constants.botLengthIn) / 2,
+                    Units.inchesToMeters(Constants.botWidthIn) / 2), //FL
+            new Translation2d(-Units.inchesToMeters(Constants.botLengthIn) / 2,
+                    -Units.inchesToMeters(Constants.botWidthIn) / 2), //BR
+            new Translation2d(-Units.inchesToMeters(Constants.botLengthIn) / 2,
+                    Units.inchesToMeters(Constants.botWidthIn) / 2) //BL
     );
 
     public static double boundPM180(double angle) {
