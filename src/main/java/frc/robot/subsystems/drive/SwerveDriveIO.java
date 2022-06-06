@@ -63,13 +63,13 @@ public class SwerveDriveIO implements DriveIO {
         switch (Constants.bot) {
             case SWERVEPROTOTYPE:
                 odometer = new SwerveOdometer();
-                frontRight = new SwerveModuleConfig(1, 5, 45, kPSteerFR, kISteerFR, kDSteerFR, kFSteerFR, kPDriveFR,
+                frontRight = new SwerveModuleConfig(1, 5, 1, kPSteerFR, kISteerFR, kDSteerFR, kFSteerFR, kPDriveFR,
                         kIDriveFR, kDDriveFR, kFDriveFR);
-                frontLeft = new SwerveModuleConfig(2, 6, -45, kPSteerFL, kISteerFL, kDSteerFL, kFSteerFL, kPDriveFL,
+                frontLeft = new SwerveModuleConfig(2, 6, 2, kPSteerFL, kISteerFL, kDSteerFL, kFSteerFL, kPDriveFL,
                         kIDriveFL, kDDriveFL, kFDriveFL);
-                backRight = new SwerveModuleConfig(3, 7, 135, kPSteerBR, kISteerBR, kDSteerBR, kFSteerBR, kPDriveBR,
+                backRight = new SwerveModuleConfig(3, 7, 3, kPSteerBR, kISteerBR, kDSteerBR, kFSteerBR, kPDriveBR,
                         kIDriveBR, kDDriveBR, kFDriveBR);
-                backLeft = new SwerveModuleConfig(4, 8, -135, kPSteerBL, kISteerBL, kDSteerBL, kFSteerBL, kPDriveBL,
+                backLeft = new SwerveModuleConfig(4, 8, 4, kPSteerBL, kISteerBL, kDSteerBL, kFSteerBL, kPDriveBL,
                         kIDriveBL, kDDriveBL, kFDriveBL);
                 moduleContainer = new SwerveModuleConfig[] { frontRight, frontLeft, backRight, backLeft };
                 break;
@@ -80,14 +80,14 @@ public class SwerveDriveIO implements DriveIO {
 
     @Override
     public void setSteerPID(double[] Pcontainer, double[] Icontainer, double[] Dcontainer, double[] Fcontainer) {
-        for (int i = 0; i < moduleContainer.length - 1; i++) {
+        for (int i = 0; i < moduleContainer.length; i++) {
             moduleContainer[i].configSteerPID(Pcontainer[i], Icontainer[i], Dcontainer[i], Fcontainer[i]);
         }
     }
 
     @Override
     public void setDrivePID(double[] Pcontainer, double[] Icontainer, double[] Dcontainer, double[] Fcontainer) {
-        for (int i = 0; i < moduleContainer.length - 1; i++) {
+        for (int i = 0; i < moduleContainer.length; i++) {
             moduleContainer[i].configDrivePID(Pcontainer[i], Icontainer[i], Dcontainer[i], Fcontainer[i]);
         }
     }
@@ -164,7 +164,7 @@ public class SwerveDriveIO implements DriveIO {
 
     @Override
     public void setStates(SwerveModuleState[] stateContainer) {
-        for (int i = 0; i < moduleContainer.length - 1; i++) {
+        for (int i = 0; i < moduleContainer.length; i++) {
             moduleContainer[i].setDesiredState(stateContainer[i]);
         }
     }

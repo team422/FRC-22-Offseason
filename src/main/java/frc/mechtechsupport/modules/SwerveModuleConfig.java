@@ -1,8 +1,14 @@
 package frc.mechtechsupport.modules;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.TalonFXSensorCollection;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.sensors.AbsoluteSensorRange;
+import com.ctre.phoenix.sensors.CANCoder;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.ControlType;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxPIDController;
 
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.mechtechsupport.util.SwerveModuleMath;
@@ -10,56 +16,59 @@ import frc.mechtechsupport.util.TalonFXUtils;
 import frc.robot.Constants;
 
 public class SwerveModuleConfig {
-    private final double degOffSet;
 
     //Drive objects for the Module
     private final WPI_TalonFX drive;
-    private TalonFXSensorCollection driveEncoder;
 
     //Steering objects for the Module (encoder will be analogInput OR canCoder)
-    private final WPI_TalonFX steer;
-    private TalonFXSensorCollection steerEncoder;
+    private final CANSparkMax steer;
+    private final CANCoder steerAbsEncoder;
+    private final RelativeEncoder steerEncoder;
+    private final SparkMaxPIDController steerController;
 
-    public SwerveModuleConfig(int idDrive, int idSteer, double degOffSet, double kPSteer,
+    public SwerveModuleConfig(int idDrive, int idSteer, int steerEncoderID, double kPSteer,
             double kISteer, double kDSteer, double kFSteer, double kPDrive, double kIDrive, double kDDrive,
             double kFDrive) {
-        this.degOffSet = degOffSet;
 
         //Motor Config
         drive = new WPI_TalonFX(idDrive);
-        steer = new WPI_TalonFX(idSteer);
+        steer = new CANSparkMax(idSteer, MotorType.kBrushless);
+
+        //Encoder Config
+        this.steerEncoder = steer.getEncoder();
+        steerEncoder.setPositionConversionFactor(2048);
+        this.steerAbsEncoder = new CANCoder(steerEncoderID);
+        steerAbsEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Unsigned_0_to_360);
 
         //PID Config
+        this.steerController = steer.getPIDController();
         drive.config_kP(0, kPDrive);
         drive.config_kI(0, kIDrive);
         drive.config_kD(0, kDDrive);
         drive.config_kF(0, kFDrive);
-        steer.config_kP(0, kPSteer);
-        steer.config_kI(0, kISteer);
-        steer.config_kD(0, kDSteer);
-        steer.config_kF(0, kFSteer);
+        steerController.setP(kPSteer);
+        steerController.setI(kISteer);
+        steerController.setD(kDSteer);
+        steerController.setFF(kFSteer);
 
-        //Encoder Config
-        driveEncoder = drive.getSensorCollection();
-        steerEncoder = steer.getSensorCollection();
     }
 
     public void configSteerPID(double kp, double ki, double kd, double kf) {
-        steer.config_kP(0, kp);
-        steer.config_kI(0, ki);
-        steer.config_kD(0, kd);
-        steer.config_kF(0, kf);
+        steerController.setP(kp);
+        steerController.setI(ki);
+        steerController.setD(kd);
+        steerController.setFF(kf);
     }
 
     public void configDrivePID(double kp, double ki, double kd, double kf) {
-        steer.config_kP(0, kp);
-        steer.config_kI(0, ki);
-        steer.config_kD(0, kd);
-        steer.config_kF(0, kf);
+        drive.config_kP(0, kp);
+        drive.config_kI(0, ki);
+        drive.config_kD(0, kd);
+        drive.config_kF(0, kf);
     }
 
     public double getDriveVelocity() {
-        return driveEncoder.getIntegratedSensorVelocity();
+        return drive.getSelectedSensorVelocity();
     }
 
     public double getAbsoluteEncoderRad() {
@@ -67,12 +76,14 @@ public class SwerveModuleConfig {
     }
 
     public void setSteer(double heading) {
-        steer.set(ControlMode.Position,
-                TalonFXUtils.wheelDegreesToTicks(SwerveModuleMath.boundPM180(heading), Constants.steerGearRatio));
+        steerController.setReference(
+                TalonFXUtils.wheelDegreesToTicks(SwerveModuleMath.boundPM180(heading), Constants.steerGearRatio),
+                ControlType.kPosition);
+        //needs to have correct ticks to revolution put in or it won't work
     }
 
     public void setDrive(double speed) {
-        steer.set(ControlMode.Velocity, speed);
+        drive.set(ControlMode.Velocity, speed);
     }
 
     public void setDesiredState(SwerveModuleState state) {
@@ -91,18 +102,14 @@ public class SwerveModuleConfig {
         double optomizedAngleMagnitude = Math.min(Math.abs(deltaAngle), Math.abs(invDeltaAngle));
         double trueAngle = Math.abs(deltaAngle) == optomizedAngleMagnitude ? deltaAngle : invDeltaAngle;
         boolean isInvert = Math.abs(deltaAngle) == optomizedAngleMagnitude ? false : true;
-        double setPoint = steer.getSelectedSensorPosition() + trueAngle * Constants.encoderTalonFXTicksPerRev / 360.0;
-        steer.set(ControlMode.Position, setPoint);
+        double setPoint = steerEncoder.getPosition() + trueAngle * Constants.encoderTalonFXTicksPerRev / 360.0;
+        steerController.setReference(setPoint, ControlType.kPosition);
         drive.set(ControlMode.Velocity, isInvert ? -speed : speed);
     }
 
-    public void resetEncoders() {
-        driveEncoder.setIntegratedSensorPosition(0, 0);
-    }
-
     public double getAngle() {
-        double ang = steerEncoder.getIntegratedSensorPosition();
-        ang = ang * 360 / Constants.encoderTalonFXTicksPerRev + degOffSet; //Compassify
+        double ang = steerAbsEncoder.getAbsolutePosition();
+        ang = ang * 360 / Constants.encoderTalonFXTicksPerRev; //Compassify
         if (ang > 360) {
             ang -= 360;
         }

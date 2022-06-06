@@ -20,11 +20,13 @@ public class PIDTuning {
     private static double fDrive = 0;
     private static int driveID = 0;
     private static int steerID = 0;
+    private static int steerEncoderID = 0;
     private static TunableNumber tunableSteerP;
     private static TunableNumber tunableSteerI;
     private static TunableNumber tunableSteerD;
     private static TunableNumber tunableSteerF;
     private static TunableInt tunableSteerID;
+    private static TunableInt tunableSteerEncoderID;
     private static TunableNumber tunableHeading;
     private static TunableNumber tunableDriveP;
     private static TunableNumber tunableDriveI;
@@ -73,12 +75,15 @@ public class PIDTuning {
         tunableDriveF = new TunableNumber("Drive Motor F Gain", 0);
         tunableHeading = new TunableNumber("Heading set point", 0);
         tunableSpeed = new TunableNumber("Speed set point", 0);
+        tunableSteerEncoderID = new TunableInt("encoder ID", 0);
     }
 
     private void changeListener() {
-        tunableSteerID.addChangeListener((val) -> module = new SwerveModuleConfig(driveID, val, 0.0, pSteer,
+        tunableSteerID.addChangeListener((val) -> module = new SwerveModuleConfig(driveID, val, steerEncoderID, pSteer,
                 iSteer, dSteer, fSteer, pDrive, iDrive, dDrive, fDrive));
-        tunableDriveID.addChangeListener((val) -> module = new SwerveModuleConfig(val, steerID, 0.0, pSteer,
+        tunableDriveID.addChangeListener((val) -> module = new SwerveModuleConfig(val, steerID, steerEncoderID, pSteer,
+                iSteer, dSteer, fSteer, pDrive, iDrive, dDrive, fDrive));
+        tunableSteerEncoderID.addChangeListener((val) -> module = new SwerveModuleConfig(driveID, steerID, val, pSteer,
                 iSteer, dSteer, fSteer, pDrive, iDrive, dDrive, fDrive));
         tunableSteerP.addChangeListener((val) -> module.configSteerPID(val, iSteer, dSteer, fSteer));
         tunableDriveP.addChangeListener((val) -> module.configDrivePID(val, iDrive, dDrive, fDrive));
@@ -104,6 +109,7 @@ public class PIDTuning {
             fDrive = tunableDriveF.get();
             driveID = tunableDriveID.get();
             steerID = tunableSteerID.get();
+            steerEncoderID = tunableSteerEncoderID.get();
             setPointVel = tunableSpeed.get();
             setPointPos = tunableHeading.get();
             errorVel = setPointVel - module.getDriveVelocity();
