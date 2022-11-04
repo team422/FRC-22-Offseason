@@ -7,8 +7,10 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.commands.ExampleCommand;
-import frc.robot.subsystems.ExampleSubsystem;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.AutoTestSequence;
+import frc.robot.commands.Drive;
+import frc.robot.subsystems.SwerveModule;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -18,14 +20,23 @@ import frc.robot.subsystems.ExampleSubsystem;
  */
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
-    private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
-
-    private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
+    // private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+    private final SwerveModule mTest;
+    private final SwerveModule mTest2;
+    private XboxController myController;
+    // private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
         // Configure the button bindings
+        mTest = new SwerveModule(Constants.DriveConstants.kSwerveTestMotorDrive,
+                Constants.DriveConstants.kSwerveTestMotorTurning, Constants.DriveConstants.analogEncoderSwerveTesting,
+                0);
+        mTest2 = new SwerveModule(Constants.DriveConstants.kSwerveTestMotorDrive2, // SET REAL CONSTANT VALUES
+                Constants.DriveConstants.kSwerveTestMotorTurning2, Constants.DriveConstants.analogEncoderSwerveTesting2,
+                1);
         configureButtonBindings();
+
     }
 
     /**
@@ -35,6 +46,9 @@ public class RobotContainer {
      * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
+        myController = new XboxController(0);
+        new JoystickButton(myController, 1).whenHeld(new Drive(mTest, () -> myController.getLeftX(),
+                () -> myController.getLeftY(), () -> myController.getRightX()));
     }
 
     /**
@@ -44,6 +58,9 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         // An ExampleCommand will run in autonomous
-        return m_autoCommand;
+        // return m_autoCommand;
+        // mTest.setDesiredState(Double);
+        return new AutoTestSequence(mTest2, mTest, 0.2);
+        // return null;
     }
 }
