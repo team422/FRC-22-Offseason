@@ -1,5 +1,8 @@
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -68,41 +71,58 @@ public final class Constants {
         // public static final boolean kFrontRightDriveEncoderReversed = false;
         // public static final boolean kRearLeftDriveEncoderReversed = true;
         // public static final boolean kRearRightDriveEncoderReversed = true;
-        public static final int kSwerveTestMotorTurning = 38;
-        public static final int analogEncoderSwerveTesting = 3;
-        public static final int kSwerveTestMotorDrive = 39;
-        public static final int kSwerveTestMotorTurning2 = 40; // SET REAL VALUES
-        public static final int kSwerveTestMotorDrive2 = 41;
-        public static final int analogEncoderSwerveTesting2 = 42;
+        // public static final int kSwerveTestMotorTurning = 38;
+        // public static final int analogEncoderSwerveTesting = 3;
+        // public static final int kSwerveTestMotorDrive = 39;
+        // public static final int kSwerveTestMotorTurning2 = 40; // SET REAL VALUES
+        // public static final int kSwerveTestMotorDrive2 = 41;
+        // public static final int analogEncoderSwerveTesting2 = 42;
         // public static final boolean kFrontLeftTurningEncoderReversed = false;
         // public static final boolean kFrontRightTurningEncoderReversed = false;
         // public static final boolean kRearLeftTurningEncoderReversed = true;
         // public static final boolean kRearRightTurningEncoderReversed = true;
+        public static final double kMaxAngularSpeed = 2 * Math.PI; // radians per second
 
-        // // Units are meters.
-        // // Distance between centers of right and left wheels on robot
-        // public static final double kTrackWidth = 0.5715; // 22.5 in
+        // Units are meters.
+        // Distance between centers of right and left wheels on robot
+        public static final double kTrackWidth = 0.5715; // 22.5 in
 
-        // // Distance between front and back wheels on robot
-        // public static final double kWheelBase = 0.6223; // 24.5 in
+        // Distance between front and back wheels on robot
+        public static final double kWheelBase = 0.6223; // 24.5 in
 
-        // // Units are meters per second
-        // public static final double kMaxTranslationalVelocity = 3.5; //max 4.5
+        // Units are meters per second
+        public static final double kMaxTranslationalVelocity = 3.5; //max 4.5
 
-        // // Units are radians per second
-        // public static final double kMaxRotationalVelocity = 3.75; //max 5.0
-
-        // // Max veloc
+        // Units are radians per second
+        public static final double kMaxRotationalVelocity = 3.75; //max 5.0
+        public static final double kMaxSpeedMetersPerSecond = 3.5;
+        // // Max velocity
 
         // //The locations for the modules must be relative to the center of the robot. 
         // // Positive x values represent moving toward the front of the robot 
         // // Positive y values represent moving toward the left of the robot.
-        // public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
-        //         new Translation2d(kWheelBase / 2.0, kTrackWidth / 2.0), // front left
-        //         new Translation2d(kWheelBase / 2.0, -kTrackWidth / 2.0), // front right
-        //         new Translation2d(-kWheelBase / 2.0, kTrackWidth / 2.0), // rear left
-        //         new Translation2d(-kWheelBase / 2.0, -kTrackWidth / 2.0) // rear right
-        // );
+        public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
+                new Translation2d(kWheelBase / 2.0, kTrackWidth / 2.0), // front left
+                new Translation2d(kWheelBase / 2.0, -kTrackWidth / 2.0), // front right
+                new Translation2d(-kWheelBase / 2.0, kTrackWidth / 2.0), // rear left
+                new Translation2d(-kWheelBase / 2.0, -kTrackWidth / 2.0) // rear right
+        );
+        public static final int kFrontRightDriveMotor = 39;
+        public static final int kFrontRightTurningMotor = 38;
+        public static final int kFrontRightEncoder = 3;
+
+        public static final int kFrontLeftDriveMotor = 2;
+        public static final int kFrontLeftTurningMotor = 23;
+        public static final int kFrontLeftEncoder = 1;
+
+        public static final int kRearRightDriveMotor = 3;
+        public static final int kRearRightTurningMotor = 32;
+        public static final int kRearRightEncoder = 2;
+
+        public static final int kRearLeftDriveMotor = 1;
+        public static final int kRearLeftTurningMotor = 16;
+        public static final int kRearLeftEncoder = 0;
+        public static final int kGyroPort = 0;
 
         // public static final boolean kGyroReversed = false;
     }

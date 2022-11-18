@@ -18,9 +18,8 @@ public class AutoTestSequence extends SequentialCommandGroup {
         m_swerveModule = module;
         m_swerveModule2 = module2;
         m_speed = speed;
-        addCommands(
-                new Turn(m_swerveModule, m_speed),
-                new Turn(m_swerveModule2, m_speed));
+        // new Turn(m_swerveModule, m_speed),
+        // new Turn(m_swerveModule2, m_speed));
 
     }
 

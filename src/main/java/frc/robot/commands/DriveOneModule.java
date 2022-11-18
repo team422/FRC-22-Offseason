@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.SwerveModule;
 
 /** An example command that uses an example subsystem. */
-public class Drive extends CommandBase {
+public class DriveOneModule extends CommandBase {
     @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
     private final SwerveModule swerveModule;
     private final Supplier<Double> xSpeed;
@@ -24,7 +24,7 @@ public class Drive extends CommandBase {
      *
      * @param subsystem The subsystem used by this command.
      */
-    public Drive(SwerveModule swerveModule, Supplier<Double> x, Supplier<Double> y, Supplier<Double> z) {
+    public DriveOneModule(SwerveModule swerveModule, Supplier<Double> x, Supplier<Double> y, Supplier<Double> z) {
         this.swerveModule = swerveModule;
         // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(this.swerveModule);

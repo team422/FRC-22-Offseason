@@ -24,7 +24,7 @@ public class SwerveModule extends SubsystemBase {
     private final RelativeEncoder m_driveEncoder;
     private final RelativeEncoder m_turningEncoder;
 
-    private final AnalogEncoder m_turningCANCoder;
+    private final AnalogEncoder m_turningCANCoder; // THIS MAY HAVE TO BE CHANGED BACK TO AN ANALOG ENCODER
 
     // absolute offset for the CANCoder so that the wheels can be aligned when the
     // robot is turned on
@@ -191,7 +191,7 @@ public class SwerveModule extends SubsystemBase {
     }
 
     public void syncTurningEncoders() {
-        // m_turningEncoder.setPosition(m_turningCANCoder.getAbsolutePosition());
+        // m_turningEncoder.setPosition(m_turningCANCoder.get());
     }
 
     /** Zeros all the SwerveModule encoders. */
