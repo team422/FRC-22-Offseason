@@ -30,7 +30,8 @@ public class FullSwerveBase extends SubsystemBase {
         this.m_swerveModules = m_swerveModules;
         for (SwerveModule module : m_swerveModules) {
             module.resetDistance();
-            // module.syncTurningEncoders();
+            module.DONTUSETHISRESETTURNINGENCODER();
+            module.syncTurningEncoders();
         }
         // m_targetPose = m_odometry.getPoseMeters();
         m_thetaController.reset();
@@ -64,6 +65,12 @@ public class FullSwerveBase extends SubsystemBase {
         return m_odometry.getPoseMeters();
     }
 
+    public void printAllVals() {
+        for (SwerveModule iModule : this.m_swerveModules) {
+            System.out.println(iModule.getState());
+        }
+    }
+
     // returns the heading of the robot
     public Rotation2d getHeading() {
         return m_gyro.getRotation2d();
@@ -79,21 +86,12 @@ public class FullSwerveBase extends SubsystemBase {
         SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(speeds);
         // SwerveModule.normalizeWheelSpeeds(moduleStates, DriveConstants.kMaxSpeedMetersPerSecond);
         setModuleStates(moduleStates);
-
     }
 
     public void setModuleStates(SwerveModuleState[] moduleStates) {
         for (int i = 0; i < 4; i++) {
             m_swerveModules[i].setDesiredState(moduleStates[i]);
         }
-    }
-
-    public void setDesiredTurn(SwerveModuleState state) {
-        SwerveModuleState[] moduleStates = new SwerveModuleState[4];
-        for (int i = 0; i < 4; i++) {
-            moduleStates[i] = state;
-        }
-        setModuleStates(moduleStates);
     }
 
     public Rotation2d getGyroAngle() {

@@ -2,6 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.util.Units;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -85,10 +86,10 @@ public final class Constants {
 
         // Units are meters.
         // Distance between centers of right and left wheels on robot
-        public static final double kTrackWidth = 0.5715; // 22.5 in
+        public static final double kTrackWidth = Units.inchesToMeters(22.5); // 22.5 in
 
         // Distance between front and back wheels on robot
-        public static final double kWheelBase = 0.6223; // 24.5 in
+        public static final double kWheelBase = Units.inchesToMeters(22.5); // 24.5 in
 
         // Units are meters per second
         public static final double kMaxTranslationalVelocity = 3.5; //max 4.5
@@ -119,8 +120,8 @@ public final class Constants {
         public static final int kRearRightTurningMotor = 32;
         public static final int kRearRightEncoder = 2;
 
-        public static final int kRearLeftDriveMotor = 1;
-        public static final int kRearLeftTurningMotor = 16;
+        public static final int kRearLeftDriveMotor = 16;
+        public static final int kRearLeftTurningMotor = 1;
         public static final int kRearLeftEncoder = 0;
         public static final int kGyroPort = 0;
 
@@ -128,7 +129,7 @@ public final class Constants {
     }
 
     public static final class ModuleConstants {
-        public static final double kDriveP = 0.1;
+        public static final double kDriveP = 0.01;
         public static final double kDriveI = 0.0;
         public static final double kDriveD = 0.0;
         public static final double kDriveFF = 2.96;

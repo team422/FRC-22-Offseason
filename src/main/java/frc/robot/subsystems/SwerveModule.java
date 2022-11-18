@@ -79,10 +79,10 @@ public class SwerveModule extends SubsystemBase {
         m_turningController.setI(Constants.ModuleConstants.kTurningI);
         m_turningController.setD(Constants.ModuleConstants.kTurningD);
 
-        // 401 only sets P of the drive PID
-        m_driveController.setP(Constants.ModuleConstants.kDriveP);
-        m_driveController.setI(Constants.ModuleConstants.kDriveI);
-        m_driveController.setD(Constants.ModuleConstants.kDriveD);
+        // // 401 only sets P of the drive PID
+        // m_driveController.setP(Constants.ModuleConstants.kDriveP);
+        // m_driveController.setI(Constants.ModuleConstants.kDriveI);
+        // m_driveController.setD(Constants.ModuleConstants.kDriveD);
     }
 
     /**
@@ -109,6 +109,9 @@ public class SwerveModule extends SubsystemBase {
         return m_turningEncoder;
     }
 
+    public void DONTUSETHISRESETTURNINGENCODER() {
+        m_turningEncoder.setPosition(0);
+    }
     // public CANCoder getTurnCANcoder() {
     //     return m_turningCANCoder;
     // }
@@ -191,7 +194,7 @@ public class SwerveModule extends SubsystemBase {
     }
 
     public void syncTurningEncoders() {
-        // m_turningEncoder.setPosition(m_turningCANCoder.get());
+        m_turningEncoder.setPosition(m_turningCANCoder.getAbsolutePosition());
     }
 
     /** Zeros all the SwerveModule encoders. */

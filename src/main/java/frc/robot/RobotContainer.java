@@ -56,14 +56,18 @@ public class RobotContainer {
                 Constants.DriveConstants.kRearRightTurningMotor, Constants.DriveConstants.kRearRightEncoder, 2);
         m_LeftRearSwerveModule = new SwerveModule(Constants.DriveConstants.kRearLeftDriveMotor,
                 Constants.DriveConstants.kRearLeftTurningMotor, Constants.DriveConstants.kRearLeftEncoder, 3);
-        m_SwerveModules = new SwerveModule[] { m_RightFrontSwerveModule, m_LeftFrontSwerveModule,
-                m_RightRearSwerveModule, m_LeftRearSwerveModule };
+        m_SwerveModules = new SwerveModule[] { m_LeftFrontSwerveModule, m_RightFrontSwerveModule,
+                m_LeftRearSwerveModule, m_RightRearSwerveModule };
 
         m_Gyro = new ADXRS450_Gyro();
 
         m_SwerveBase = new FullSwerveBase(m_SwerveModules, m_Gyro);
 
         configureButtonBindings();
+    }
+
+    public void printDriveBaseVals() {
+        m_SwerveBase.printAllVals();
     }
 
     /**
@@ -76,8 +80,8 @@ public class RobotContainer {
         myController = new XboxController(0);
         // new JoystickButton(myController, 1).whenHeld(new DriveOneModule(mTest, () -> myController.getLeftX(),
         //         () -> myController.getLeftY(), () -> myController.getRightX()));
-        FullSwerveDrive driveCommand = new FullSwerveDrive(m_SwerveBase, () -> myController.getLeftX(),
-                () -> myController.getLeftY(), () -> myController.getRightX());
+        FullSwerveDrive driveCommand = new FullSwerveDrive(m_SwerveBase, () -> -myController.getLeftX(),
+                () -> myController.getLeftY(), () -> -myController.getRightX());
         m_SwerveBase.setDefaultCommand(driveCommand);
 
     }
