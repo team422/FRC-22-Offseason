@@ -4,11 +4,16 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.commands.ExampleCommand;
-import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.commands.FullSwerveDrive;
+import frc.robot.commands.Turn;
+import frc.robot.subsystems.FullSwerveBase;
+import frc.robot.subsystems.SwerveModule;
+import frc.robot.utils.MotorFactory;
+import frc.robot.utils.SubsystemFactory;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -18,14 +23,40 @@ import frc.robot.subsystems.ExampleSubsystem;
  */
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
-    private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+    // private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+    // private final SwerveModule mTest;
+    // private final SwerveModule mTest2;
+    SwerveModule m_RightFrontSwerveModule;
+    SwerveModule m_LeftFrontSwerveModule;
+    SwerveModule m_RightRearSwerveModule;
+    SwerveModule m_LeftRearSwerveModule;
+    SwerveModule[] m_SwerveModules;
 
-    private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
+    FullSwerveBase m_SwerveBase;
+
+    private XboxController myController;
+    private SubsystemFactory subsystemFactory;
+
+    ADXRS450_Gyro m_Gyro;
+
+    // private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
-    public RobotContainer() {
-        // Configure the button bindings
+    public RobotContainer(SubsystemFactory subsystemFactory) {
+        this.subsystemFactory = subsystemFactory;
+        m_SwerveBase = this.subsystemFactory.createFullSwerveBase();
+
         configureButtonBindings();
+    }
+
+    public RobotContainer() {
+        MotorFactory motorFactory = new MotorFactory();
+        this.subsystemFactory = new SubsystemFactory(motorFactory);
+        m_SwerveBase = this.subsystemFactory.createFullSwerveBase();
+    }
+
+    public void printDriveBaseVals() {
+        m_SwerveBase.printAllVals();
     }
 
     /**
@@ -35,6 +66,13 @@ public class RobotContainer {
      * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
+        myController = new XboxController(0);
+        // new JoystickButton(myController, 1).whenHeld(new DriveOneModule(mTest, () -> myController.getLeftX(),
+        //         () -> myController.getLeftY(), () -> myController.getRightX()));
+        FullSwerveDrive driveCommand = new FullSwerveDrive(m_SwerveBase, () -> -myController.getLeftX(),
+                () -> myController.getLeftY(), () -> -myController.getRightX());
+        m_SwerveBase.setDefaultCommand(driveCommand);
+
     }
 
     /**
@@ -44,6 +82,10 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         // An ExampleCommand will run in autonomous
-        return m_autoCommand;
+        // return m_autoCommand;
+        // mTest.setDesiredState(Double);
+        // return new AutoTestSequence(mTest2, mTest, 0.2);
+        return new Turn(m_SwerveBase, 50);
+        // return null;
     }
 }
