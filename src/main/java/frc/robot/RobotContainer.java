@@ -12,6 +12,8 @@ import frc.robot.commands.FullSwerveDrive;
 import frc.robot.commands.Turn;
 import frc.robot.subsystems.FullSwerveBase;
 import frc.robot.subsystems.SwerveModule;
+import frc.robot.utils.MotorFactory;
+import frc.robot.utils.SubsystemFactory;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -33,37 +35,24 @@ public class RobotContainer {
     FullSwerveBase m_SwerveBase;
 
     private XboxController myController;
+    private SubsystemFactory subsystemFactory;
 
     ADXRS450_Gyro m_Gyro;
 
     // private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
-    public RobotContainer() {
-        // Configure the button bindings
-        // mTest = new SwerveModule(Constants.DriveConstants.kSwerveTestMotorDrive,
-        //         Constants.DriveConstants.kSwerveTestMotorTurning, Constants.DriveConstants.analogEncoderSwerveTesting,
-        //         0);
-        // mTest2 = new SwerveModule(Constants.DriveConstants.kSwerveTestMotorDrive2, // SET REAL CONSTANT VALUES
-        //         Constants.DriveConstants.kSwerveTestMotorTurning2, Constants.DriveConstants.analogEncoderSwerveTesting2,
-        //         1);
-        m_RightFrontSwerveModule = new SwerveModule(Constants.DriveConstants.kFrontRightDriveMotor,
-                Constants.DriveConstants.kFrontRightTurningMotor, Constants.DriveConstants.kFrontRightEncoder,
-                0);
-        m_LeftFrontSwerveModule = new SwerveModule(Constants.DriveConstants.kFrontLeftDriveMotor,
-                Constants.DriveConstants.kFrontLeftTurningMotor, Constants.DriveConstants.kFrontLeftEncoder, 1);
-        m_RightRearSwerveModule = new SwerveModule(Constants.DriveConstants.kRearRightDriveMotor,
-                Constants.DriveConstants.kRearRightTurningMotor, Constants.DriveConstants.kRearRightEncoder, 2);
-        m_LeftRearSwerveModule = new SwerveModule(Constants.DriveConstants.kRearLeftDriveMotor,
-                Constants.DriveConstants.kRearLeftTurningMotor, Constants.DriveConstants.kRearLeftEncoder, 3);
-        m_SwerveModules = new SwerveModule[] { m_LeftFrontSwerveModule, m_RightFrontSwerveModule,
-                m_LeftRearSwerveModule, m_RightRearSwerveModule };
-
-        m_Gyro = new ADXRS450_Gyro();
-
-        m_SwerveBase = new FullSwerveBase(m_SwerveModules, m_Gyro);
+    public RobotContainer(SubsystemFactory subsystemFactory) {
+        this.subsystemFactory = subsystemFactory;
+        m_SwerveBase = this.subsystemFactory.createFullSwerveBase();
 
         configureButtonBindings();
+    }
+
+    public RobotContainer() {
+        MotorFactory motorFactory = new MotorFactory();
+        this.subsystemFactory = new SubsystemFactory(motorFactory);
+        m_SwerveBase = this.subsystemFactory.createFullSwerveBase();
     }
 
     public void printDriveBaseVals() {

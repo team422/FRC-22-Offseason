@@ -38,7 +38,7 @@
     "java.format.comments.enabled": false,
     "java.format.onType.enabled": true,
     "editor.formatOnSave": true,
-    "java.saveActions.organizeImports": true,
+    "java.saveActions.organizeImports": false,
     "editor.codeActionsOnSave": {
         "source.organizeImports": true
     }
