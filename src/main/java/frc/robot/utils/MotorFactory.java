@@ -15,6 +15,7 @@ public class MotorFactory {
         motor.setIdleMode(CANSparkMax.IdleMode.kCoast);
         motor.restoreFactoryDefaults();
         motor.setInverted(inverted);
+        motor.enableVoltageCompensation(12); // this should really be a constant
 
         return motor;
     }
@@ -44,10 +45,6 @@ public class MotorFactory {
 
         // m_driveMotor.enableVoltageCompensation(12);
 
-        // m_turningController.setP(Constants.ModuleConstants.kTurningP);
-        // m_turningController.setI(Constants.ModuleConstants.kTurningI);
-        // m_turningController.setD(Constants.ModuleConstants.kTurningD);
-
         //m_turningCANCoder.setDistancePerRotation(turningCANCoderOffsetDegrees);
         // m_turningCANCoder.configAbsoluteSensorRange(AbsoluteSensorRange.Unsigned_0_to_360);
         // m_turningCANCoder.setPosition(0);
@@ -56,11 +53,6 @@ public class MotorFactory {
 
         // m_driveMotor.setIdleMode(IdleMode.kBrake);
         // m_turningMotor.setIdleMode(IdleMode.kCoast);
-
-        // // 401 only sets P of the drive PID
-        // m_driveController.setP(Constants.ModuleConstants.kDriveP);
-        // m_driveController.setI(Constants.ModuleConstants.kDriveI);
-        // m_driveController.setD(Constants.ModuleConstants.kDriveD);
     }
 
     public RelativeEncoder createDrivingEncoder(CANSparkMax driveMotor) {
