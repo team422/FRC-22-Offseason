@@ -21,6 +21,8 @@ public class FullSwerveBase extends SubsystemBase {
     Gyro m_gyro;
     SwerveDriveOdometry m_odometry;
 
+    String m_swerveModuleNames[] = { "Left Front", "Right Front", "Left Rear", "Right Rear" };
+
     //target pose and controller
     Pose2d m_targetPose;
     PIDController m_thetaController = new PIDController(1.0, 0.0, 0.05);
@@ -30,8 +32,8 @@ public class FullSwerveBase extends SubsystemBase {
         this.m_swerveModules = m_swerveModules;
         for (SwerveModule module : m_swerveModules) {
             module.resetDistance();
-            module.DONTUSETHISRESETTURNINGENCODER();
             module.syncTurningEncoders();
+            // module.DONTUSETHISRESETTURNINGENCODER();
         }
         // m_targetPose = m_odometry.getPoseMeters();
         m_thetaController.reset();
@@ -57,6 +59,13 @@ public class FullSwerveBase extends SubsystemBase {
         SmartDashboard.putNumber("currentY", getPose().getY());
         SmartDashboard.putNumber("currentAngle", getPose().getRotation().getRadians());
         // SmartDashboard.putNumber("targetPoseAngle", m_targetPose.getRotation().getRadians());
+
+        for (int i = 0; i < m_swerveModules.length; i++) {
+            SmartDashboard.putNumber(m_swerveModuleNames[i] + ": Drive Speed",
+                    m_swerveModules[i].getDriveVelocityMetersPerSecond());
+            SmartDashboard.putNumber(m_swerveModuleNames[i] + ": Rotation",
+                    m_swerveModules[i].getTurnDegrees());
+        }
 
     }
 

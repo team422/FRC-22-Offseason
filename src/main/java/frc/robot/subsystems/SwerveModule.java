@@ -33,6 +33,8 @@ public class SwerveModule extends SubsystemBase {
     private final SparkMaxPIDController m_turningController;
     private final SparkMaxPIDController m_driveController;
 
+    private final double m_offset;
+
     /**
      * Constructs a SwerveModule.
      *
@@ -43,7 +45,7 @@ public class SwerveModule extends SubsystemBase {
             int driveMotorChannel,
             int turningMotorChannel,
             int turningCANCoderChannel,
-            double turningCANCoderOffsetDegrees) {
+            double offset) {
 
         m_driveMotor = new CANSparkMax(driveMotorChannel, MotorType.kBrushless);
         m_turningMotor = new CANSparkMax(turningMotorChannel, MotorType.kBrushless);
@@ -68,6 +70,7 @@ public class SwerveModule extends SubsystemBase {
         m_driveEncoder.setVelocityConversionFactor(ModuleConstants.kDriveConversionFactor / 60.0);
         m_driveEncoder.setPositionConversionFactor(ModuleConstants.kDriveConversionFactor);
 
+        m_turningEncoder.setVelocityConversionFactor((360.0 / ModuleConstants.kTurnPositionConversionFactor) / 60.0);
         m_turningEncoder.setPositionConversionFactor(360.0 / ModuleConstants.kTurnPositionConversionFactor);
 
         m_turningController = m_turningMotor.getPIDController();
@@ -83,6 +86,8 @@ public class SwerveModule extends SubsystemBase {
         // m_driveController.setP(Constants.ModuleConstants.kDriveP);
         // m_driveController.setI(Constants.ModuleConstants.kDriveI);
         // m_driveController.setD(Constants.ModuleConstants.kDriveD);
+
+        m_offset = offset;
     }
 
     /**
@@ -96,7 +101,7 @@ public class SwerveModule extends SubsystemBase {
         // double m1 = m_turningEncoder.getPosition() % 360.0;
         // double m2 = (m1 < 0) ? m1 + 360 : m1;
 
-        double m2 = (m_turningEncoder.getPosition() % 360 + 360) % 360;
+        double m2 = getTurnDegrees();
 
         return new SwerveModuleState(m_driveEncoder.getVelocity(), new Rotation2d(m2 * Math.PI / 180));
     }
@@ -205,5 +210,13 @@ public class SwerveModule extends SubsystemBase {
         // m_turningCANCoder.setPosition(0.0);
         // m_turningCANCoder.configMagnetOffset(
         //         m_turningCANCoder.configGetMagnetOffset() - m_turningCANCoder.getAbsolutePosition());
+    }
+
+    public double getDriveVelocityMetersPerSecond() {
+        return m_driveEncoder.getVelocity();
+    }
+
+    public double getTurnDegrees() {
+        return ((m_turningEncoder.getPosition() + m_offset) % 360 + 360) % 360;
     }
 }

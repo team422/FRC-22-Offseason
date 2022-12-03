@@ -49,13 +49,13 @@ public class RobotContainer {
         //         1);
         m_RightFrontSwerveModule = new SwerveModule(Constants.DriveConstants.kFrontRightDriveMotor,
                 Constants.DriveConstants.kFrontRightTurningMotor, Constants.DriveConstants.kFrontRightEncoder,
-                0);
+                270);
         m_LeftFrontSwerveModule = new SwerveModule(Constants.DriveConstants.kFrontLeftDriveMotor,
-                Constants.DriveConstants.kFrontLeftTurningMotor, Constants.DriveConstants.kFrontLeftEncoder, 1);
+                Constants.DriveConstants.kFrontLeftTurningMotor, Constants.DriveConstants.kFrontLeftEncoder, 90);
         m_RightRearSwerveModule = new SwerveModule(Constants.DriveConstants.kRearRightDriveMotor,
-                Constants.DriveConstants.kRearRightTurningMotor, Constants.DriveConstants.kRearRightEncoder, 2);
+                Constants.DriveConstants.kRearRightTurningMotor, Constants.DriveConstants.kRearRightEncoder, 90);
         m_LeftRearSwerveModule = new SwerveModule(Constants.DriveConstants.kRearLeftDriveMotor,
-                Constants.DriveConstants.kRearLeftTurningMotor, Constants.DriveConstants.kRearLeftEncoder, 3);
+                Constants.DriveConstants.kRearLeftTurningMotor, Constants.DriveConstants.kRearLeftEncoder, 90);
         m_SwerveModules = new SwerveModule[] { m_LeftFrontSwerveModule, m_RightFrontSwerveModule,
                 m_LeftRearSwerveModule, m_RightRearSwerveModule };
 
@@ -81,7 +81,7 @@ public class RobotContainer {
         // new JoystickButton(myController, 1).whenHeld(new DriveOneModule(mTest, () -> myController.getLeftX(),
         //         () -> myController.getLeftY(), () -> myController.getRightX()));
         FullSwerveDrive driveCommand = new FullSwerveDrive(m_SwerveBase, () -> -myController.getLeftX(),
-                () -> myController.getLeftY(), () -> -myController.getRightX());
+                () -> myController.getLeftY(), () -> -myController.getRightX(), m_SwerveBase.getHeading());
         m_SwerveBase.setDefaultCommand(driveCommand);
 
     }
