@@ -135,22 +135,22 @@ public class SwerveModule extends SubsystemBase {
      */
     public void setDesiredState(SwerveModuleState state) {
 
-        Rotation2d curAngle = Rotation2d.fromDegrees(m_turningEncoder.getPosition());
+        // Rotation2d curAngle = Rotation2d.fromDegrees(m_turningEncoder.getPosition());
 
-        double delta = deltaAdjustedAngle(state.angle.getDegrees(), curAngle.getDegrees());
+        // double delta = deltaAdjustedAngle(state.angle.getDegrees(), curAngle.getDegrees());
 
-        // Calculate the drive motor output from the drive PID controller.
+        // // Calculate the drive motor output from the drive PID controller.
         double driveOutput = state.speedMetersPerSecond;
 
-        if (Math.abs(delta) > 90) {
-            driveOutput *= -1;
-            delta -= Math.signum(delta) * 180;
-        }
+        // if (Math.abs(delta) > 90) {
+        //     driveOutput *= -1;
+        //     delta -= Math.signum(delta) * 180;
+        // }
 
-        adjustedAngle = Rotation2d.fromDegrees(delta + curAngle.getDegrees());
+        // adjustedAngle = Rotation2d.fromDegrees(delta + curAngle.getDegrees());
 
         m_turningController.setReference(
-                adjustedAngle.getDegrees(),
+                state.angle.getDegrees(),
                 ControlType.kPosition);
 
         SmartDashboard.putNumber("Commanded Velocity", driveOutput);
@@ -160,34 +160,34 @@ public class SwerveModule extends SubsystemBase {
     }
 
     public void setOpenLoopState(SwerveModuleState state) {
-        Rotation2d curAngle = Rotation2d.fromDegrees(m_turningEncoder.getPosition());
+        // Rotation2d curAngle = Rotation2d.fromDegrees(m_turningEncoder.getPosition());
 
-        double delta = deltaAdjustedAngle(state.angle.getDegrees(), curAngle.getDegrees());
+        // double delta = deltaAdjustedAngle(state.angle.getDegrees(), curAngle.getDegrees());
 
-        // Calculate the drive motor output from the drive PID controller.
-        double driveOutput = state.speedMetersPerSecond;
+        // // Calculate the drive motor output from the drive PID controller.
+        // double driveOutput = state.speedMetersPerSecond;
 
-        if (Math.abs(delta) > 90) {
-            driveOutput *= -1;
-            delta -= Math.signum(delta) * 180;
-        }
+        // if (Math.abs(delta) > 90) {
+        //     driveOutput *= -1;
+        //     delta -= Math.signum(delta) * 180;
+        // }
 
-        adjustedAngle = Rotation2d.fromDegrees(delta + curAngle.getDegrees());
+        // adjustedAngle = Rotation2d.fromDegrees(delta + curAngle.getDegrees());
 
-        m_turningController.setReference(
-                adjustedAngle.getDegrees(),
-                ControlType.kPosition);
+        // m_turningController.setReference(
+        //         adjustedAngle.getDegrees(),
+        //         ControlType.kPosition);
 
-        SmartDashboard.putNumber("Commanded Velocity", driveOutput);
+        // SmartDashboard.putNumber("Commanded Velocity", driveOutput);
 
-        m_driveMotor.setVoltage(Constants.ModuleConstants.kDriveFF * driveOutput);
+        // m_driveMotor.setVoltage(Constants.ModuleConstants.kDriveFF * driveOutput);
     }
 
     //calculate the angle motor setpoint based on the desired angle and the current angle measurement
     // Arguments are in radians.
     public double deltaAdjustedAngle(double targetAngle, double currentAngle) {
-
-        return ((targetAngle - currentAngle + 180) % 360 + 360) % 360 - 180;
+        return targetAngle;
+        // return ((targetAngle - currentAngle + 180) % 360 + 360) % 360 - 180;
     }
 
     public double getDriveDistanceMeters() {
@@ -217,6 +217,7 @@ public class SwerveModule extends SubsystemBase {
     }
 
     public double getTurnDegrees() {
-        return ((m_turningEncoder.getPosition() + m_offset) % 360 + 360) % 360;
+        return m_turningEncoder.getPosition() % 360;
+        // return (m_turningEncoder.getPosition() + m_offset) % 360;
     }
 }

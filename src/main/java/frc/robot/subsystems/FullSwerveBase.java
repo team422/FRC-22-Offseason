@@ -33,7 +33,7 @@ public class FullSwerveBase extends SubsystemBase {
         for (SwerveModule module : m_swerveModules) {
             module.resetDistance();
             module.syncTurningEncoders();
-            // module.DONTUSETHISRESETTURNINGENCODER();
+            module.DONTUSETHISRESETTURNINGENCODER();
         }
         // m_targetPose = m_odometry.getPoseMeters();
         m_thetaController.reset();
@@ -93,8 +93,13 @@ public class FullSwerveBase extends SubsystemBase {
 
     public void drive(ChassisSpeeds speeds) {
         SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(speeds);
+        SwerveModuleState[] moduleStatesFinal = new SwerveModuleState[4];
+        for (int i = 0; i < 4; i++) {
+            moduleStatesFinal[i] = SwerveModuleState.optimize(moduleStates[i],
+                    new Rotation2d(m_swerveModules[i].getTurnDegrees()));
+        }
         // SwerveModule.normalizeWheelSpeeds(moduleStates, DriveConstants.kMaxSpeedMetersPerSecond);
-        setModuleStates(moduleStates);
+        setModuleStates(moduleStatesFinal);
     }
 
     public void setModuleStates(SwerveModuleState[] moduleStates) {
