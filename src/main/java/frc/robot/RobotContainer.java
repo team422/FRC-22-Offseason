@@ -36,8 +36,6 @@ public class RobotContainer {
 
     ADXRS450_Gyro m_Gyro;
 
-    ADXRS450_Gyro m_Gyro;
-
     // private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */

@@ -20,7 +20,6 @@ public class SwerveModule extends SubsystemBase {
 
     private final CANSparkMax m_driveMotor;
     private final CANSparkMax m_turningMotor;
-    private final double m_offset;
 
     private final RelativeEncoder m_driveEncoder;
     private final RelativeEncoder m_turningEncoder;
@@ -90,7 +89,6 @@ public class SwerveModule extends SubsystemBase {
         // m_driveController.setI(Constants.ModuleConstants.kDriveI);
         // m_driveController.setD(Constants.ModuleConstants.kDriveD);
 
-        m_offset = offset;
     }
 
     /**
@@ -117,9 +115,6 @@ public class SwerveModule extends SubsystemBase {
         return m_turningEncoder;
     }
 
-    public void DONTUSETHISRESETTURNINGENCODER() {
-        m_turningEncoder.setPosition(0);
-    }
     // public CANCoder getTurnCANcoder() {
     //     return m_turningCANCoder;
     // }
