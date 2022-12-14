@@ -20,11 +20,12 @@ public class SwerveModule extends SubsystemBase {
 
     private final CANSparkMax m_driveMotor;
     private final CANSparkMax m_turningMotor;
+    private final double m_offset;
 
     private final RelativeEncoder m_driveEncoder;
     private final RelativeEncoder m_turningEncoder;
 
-    private final AnalogEncoder m_turningCANCoder;
+    private final AnalogEncoder m_turningCANCoder; // THIS MAY HAVE TO BE CHANGED BACK TO AN ANALOG ENCODER
 
     // absolute offset for the CANCoder so that the wheels can be aligned when the
     // robot is turned on
@@ -43,8 +44,7 @@ public class SwerveModule extends SubsystemBase {
             int driveMotorChannel,
             int turningMotorChannel,
             int turningCANCoderChannel,
-            double turningCANCoderOffsetDegrees) {
-
+            double offset) {
         m_driveMotor = new CANSparkMax(driveMotorChannel, MotorType.kBrushless);
         m_turningMotor = new CANSparkMax(turningMotorChannel, MotorType.kBrushless);
 
@@ -55,7 +55,9 @@ public class SwerveModule extends SubsystemBase {
         // m_turningCANCoder.configAbsoluteSensorRange(AbsoluteSensorRange.Unsigned_0_to_360);
         // m_turningCANCoder.setPosition(0);
 
-        //        m_CANCoderOffset = Rotation2d.fromDegrees(turningCANCoderOffsetDegrees);
+        m_offset = offset;
+        // m_CANCoderOffset = Rotation2d.fromDegrees(turningCANCoderOffsetDegrees);
+        System.out.println(m_turningCANCoder.getAbsolutePosition());
 
         // m_driveMotor.setIdleMode(IdleMode.kBrake);
         // m_turningMotor.setIdleMode(IdleMode.kCoast);
@@ -96,7 +98,7 @@ public class SwerveModule extends SubsystemBase {
         // double m1 = m_turningEncoder.getPosition() % 360.0;
         // double m2 = (m1 < 0) ? m1 + 360 : m1;
 
-        double m2 = (m_turningEncoder.getPosition() % 360 + 360) % 360;
+        double m2 = (this.getTurnDegrees() % 360 + 360) % 360;
 
         return new SwerveModuleState(m_driveEncoder.getVelocity(), new Rotation2d(m2 * Math.PI / 180));
     }
@@ -127,9 +129,9 @@ public class SwerveModule extends SubsystemBase {
      */
     public void setDesiredState(SwerveModuleState state) {
 
-        Rotation2d curAngle = Rotation2d.fromDegrees(m_turningEncoder.getPosition());
+        Rotation2d curAngle = Rotation2d.fromDegrees(this.getTurnDegrees());
 
-        double delta = deltaAdjustedAngle(state.angle.getDegrees(), curAngle.getDegrees());
+        double delta = deltaAdjustedAngle((state.angle.getDegrees() + m_offset) % 360, curAngle.getDegrees());
 
         // Calculate the drive motor output from the drive PID controller.
         double driveOutput = state.speedMetersPerSecond;
@@ -152,7 +154,7 @@ public class SwerveModule extends SubsystemBase {
     }
 
     public void setOpenLoopState(SwerveModuleState state) {
-        Rotation2d curAngle = Rotation2d.fromDegrees(m_turningEncoder.getPosition());
+        Rotation2d curAngle = Rotation2d.fromDegrees(this.getTurnDegrees());
 
         double delta = deltaAdjustedAngle(state.angle.getDegrees(), curAngle.getDegrees());
 
@@ -191,7 +193,11 @@ public class SwerveModule extends SubsystemBase {
     }
 
     public void syncTurningEncoders() {
-        // m_turningEncoder.setPosition(m_turningCANCoder.getAbsolutePosition());
+        m_turningEncoder.setPosition(m_turningCANCoder.getAbsolutePosition() + m_offset);
+    }
+
+    public void DONTUSETHISRESETTURNINGENCODER() {
+        m_turningEncoder.setPosition(0 + m_offset);
     }
 
     /** Zeros all the SwerveModule encoders. */
@@ -202,5 +208,9 @@ public class SwerveModule extends SubsystemBase {
         // m_turningCANCoder.setPosition(0.0);
         // m_turningCANCoder.configMagnetOffset(
         //         m_turningCANCoder.configGetMagnetOffset() - m_turningCANCoder.getAbsolutePosition());
+    }
+
+    public double getTurnDegrees() {
+        return (m_turningEncoder.getPosition()) % 360;
     }
 }
