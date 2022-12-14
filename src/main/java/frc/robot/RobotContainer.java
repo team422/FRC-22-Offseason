@@ -36,6 +36,8 @@ public class RobotContainer {
 
     ADXRS450_Gyro m_Gyro;
 
+    ADXRS450_Gyro m_Gyro;
+
     // private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -68,11 +70,27 @@ public class RobotContainer {
                 m_RightRearSwerveModule, m_LeftRearSwerveModule };
 
         // m_Gyro = new WPI_Pigeon2(Constants.DriveConstants.kGyroPort);
+        // m_RightFrontSwerveModule = new SwerveModule(Constants.DriveConstants.kFrontRightDriveMotor,
+        //         Constants.DriveConstants.kFrontRightTurningMotor, Constants.DriveConstants.kFrontRightEncoder,
+        //         270);
+        // m_LeftFrontSwerveModule = new SwerveModule(Constants.DriveConstants.kFrontLeftDriveMotor,
+        //         Constants.DriveConstants.kFrontLeftTurningMotor, Constants.DriveConstants.kFrontLeftEncoder, 90);
+        // m_RightRearSwerveModule = new SwerveModule(Constants.DriveConstants.kRearRightDriveMotor,
+        //         Constants.DriveConstants.kRearRightTurningMotor, Constants.DriveConstants.kRearRightEncoder, 90);
+        // m_LeftRearSwerveModule = new SwerveModule(Constants.DriveConstants.kRearLeftDriveMotor,
+        //         Constants.DriveConstants.kRearLeftTurningMotor, Constants.DriveConstants.kRearLeftEncoder, 90);
+        // m_SwerveModules = new SwerveModule[] { m_LeftFrontSwerveModule, m_RightFrontSwerveModule,
+        //         m_LeftRearSwerveModule, m_RightRearSwerveModule };
+
         m_Gyro = new ADXRS450_Gyro();
 
         m_SwerveBase = new FullSwerveBase(m_SwerveModules, m_Gyro);
 
         configureButtonBindings();
+    }
+
+    public void printDriveBaseVals() {
+        m_SwerveBase.printAllVals();
     }
 
     /**
@@ -85,8 +103,8 @@ public class RobotContainer {
         myController = new XboxController(0);
         // new JoystickButton(myController, 1).whenHeld(new DriveOneModule(mTest, () -> myController.getLeftX(),
         //         () -> myController.getLeftY(), () -> myController.getRightX()));
-        FullSwerveDrive driveCommand = new FullSwerveDrive(m_SwerveBase, () -> myController.getLeftX(),
-                () -> myController.getLeftY(), () -> myController.getRightX());
+        FullSwerveDrive driveCommand = new FullSwerveDrive(m_SwerveBase, () -> -myController.getLeftX(),
+                () -> myController.getLeftY(), () -> -myController.getRightX());// , m_SwerveBase.getHeading()
         m_SwerveBase.setDefaultCommand(driveCommand);
 
     }

@@ -21,6 +21,8 @@ public class FullSwerveBase extends SubsystemBase {
     Gyro m_gyro;
     SwerveDriveOdometry m_odometry;
 
+    String m_swerveModuleNames[] = { "Left Front", "Right Front", "Left Rear", "Right Rear" };
+
     //target pose and controller
     Pose2d m_targetPose;
     PIDController m_thetaController = new PIDController(1.0, 0.0, 0.05);
@@ -58,12 +60,25 @@ public class FullSwerveBase extends SubsystemBase {
         SmartDashboard.putNumber("currentAngle", getPose().getRotation().getRadians());
         // SmartDashboard.putNumber("targetPoseAngle", m_targetPose.getRotation().getRadians());
 
+        for (int i = 0; i < m_swerveModules.length; i++) {
+            SmartDashboard.putNumber(m_swerveModuleNames[i] + ": Drive Speed",
+                    m_swerveModules[i].getDriveVelocityMetersPerSecond());
+            SmartDashboard.putNumber(m_swerveModuleNames[i] + ": Rotation",
+                    m_swerveModules[i].getTurnDegrees());
+        }
+
     }
 
     // returns estimated position based on odometry
     public Pose2d getPose() {
         // return new Pose2d();
         return m_odometry.getPoseMeters();
+    }
+
+    public void printAllVals() {
+        for (SwerveModule iModule : this.m_swerveModules) {
+            System.out.println(iModule.getState());
+        }
     }
 
     // returns the heading of the robot

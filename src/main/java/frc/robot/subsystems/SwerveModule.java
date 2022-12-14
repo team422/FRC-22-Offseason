@@ -34,6 +34,8 @@ public class SwerveModule extends SubsystemBase {
     private final SparkMaxPIDController m_turningController;
     private final SparkMaxPIDController m_driveController;
 
+    private final double m_offset;
+
     /**
      * Constructs a SwerveModule.
      *
@@ -45,6 +47,7 @@ public class SwerveModule extends SubsystemBase {
             int turningMotorChannel,
             int turningCANCoderChannel,
             double offset) {
+
         m_driveMotor = new CANSparkMax(driveMotorChannel, MotorType.kBrushless);
         m_turningMotor = new CANSparkMax(turningMotorChannel, MotorType.kBrushless);
 
@@ -70,6 +73,7 @@ public class SwerveModule extends SubsystemBase {
         m_driveEncoder.setVelocityConversionFactor(ModuleConstants.kDriveConversionFactor / 60.0);
         m_driveEncoder.setPositionConversionFactor(ModuleConstants.kDriveConversionFactor);
 
+        m_turningEncoder.setVelocityConversionFactor((360.0 / ModuleConstants.kTurnPositionConversionFactor) / 60.0);
         m_turningEncoder.setPositionConversionFactor(360.0 / ModuleConstants.kTurnPositionConversionFactor);
 
         m_turningController = m_turningMotor.getPIDController();
@@ -81,10 +85,12 @@ public class SwerveModule extends SubsystemBase {
         m_turningController.setI(Constants.ModuleConstants.kTurningI);
         m_turningController.setD(Constants.ModuleConstants.kTurningD);
 
-        // 401 only sets P of the drive PID
-        m_driveController.setP(Constants.ModuleConstants.kDriveP);
-        m_driveController.setI(Constants.ModuleConstants.kDriveI);
-        m_driveController.setD(Constants.ModuleConstants.kDriveD);
+        // // 401 only sets P of the drive PID
+        // m_driveController.setP(Constants.ModuleConstants.kDriveP);
+        // m_driveController.setI(Constants.ModuleConstants.kDriveI);
+        // m_driveController.setD(Constants.ModuleConstants.kDriveD);
+
+        m_offset = offset;
     }
 
     /**
@@ -111,6 +117,9 @@ public class SwerveModule extends SubsystemBase {
         return m_turningEncoder;
     }
 
+    public void DONTUSETHISRESETTURNINGENCODER() {
+        m_turningEncoder.setPosition(0);
+    }
     // public CANCoder getTurnCANcoder() {
     //     return m_turningCANCoder;
     // }
@@ -133,18 +142,18 @@ public class SwerveModule extends SubsystemBase {
 
         double delta = deltaAdjustedAngle((state.angle.getDegrees() + m_offset) % 360, curAngle.getDegrees());
 
-        // Calculate the drive motor output from the drive PID controller.
+        // // Calculate the drive motor output from the drive PID controller.
         double driveOutput = state.speedMetersPerSecond;
 
-        if (Math.abs(delta) > 90) {
-            driveOutput *= -1;
-            delta -= Math.signum(delta) * 180;
-        }
+        // if (Math.abs(delta) > 90) {
+        //     driveOutput *= -1;
+        //     delta -= Math.signum(delta) * 180;
+        // }
 
-        adjustedAngle = Rotation2d.fromDegrees(delta + curAngle.getDegrees());
+        // adjustedAngle = Rotation2d.fromDegrees(delta + curAngle.getDegrees());
 
         m_turningController.setReference(
-                adjustedAngle.getDegrees(),
+                state.angle.getDegrees(),
                 ControlType.kPosition);
 
         SmartDashboard.putNumber("Commanded Velocity", driveOutput);
@@ -156,32 +165,32 @@ public class SwerveModule extends SubsystemBase {
     public void setOpenLoopState(SwerveModuleState state) {
         Rotation2d curAngle = Rotation2d.fromDegrees(this.getTurnDegrees());
 
-        double delta = deltaAdjustedAngle(state.angle.getDegrees(), curAngle.getDegrees());
+        // double delta = deltaAdjustedAngle(state.angle.getDegrees(), curAngle.getDegrees());
 
-        // Calculate the drive motor output from the drive PID controller.
-        double driveOutput = state.speedMetersPerSecond;
+        // // Calculate the drive motor output from the drive PID controller.
+        // double driveOutput = state.speedMetersPerSecond;
 
-        if (Math.abs(delta) > 90) {
-            driveOutput *= -1;
-            delta -= Math.signum(delta) * 180;
-        }
+        // if (Math.abs(delta) > 90) {
+        //     driveOutput *= -1;
+        //     delta -= Math.signum(delta) * 180;
+        // }
 
-        adjustedAngle = Rotation2d.fromDegrees(delta + curAngle.getDegrees());
+        // adjustedAngle = Rotation2d.fromDegrees(delta + curAngle.getDegrees());
 
-        m_turningController.setReference(
-                adjustedAngle.getDegrees(),
-                ControlType.kPosition);
+        // m_turningController.setReference(
+        //         adjustedAngle.getDegrees(),
+        //         ControlType.kPosition);
 
-        SmartDashboard.putNumber("Commanded Velocity", driveOutput);
+        // SmartDashboard.putNumber("Commanded Velocity", driveOutput);
 
-        m_driveMotor.setVoltage(Constants.ModuleConstants.kDriveFF * driveOutput);
+        // m_driveMotor.setVoltage(Constants.ModuleConstants.kDriveFF * driveOutput);
     }
 
     //calculate the angle motor setpoint based on the desired angle and the current angle measurement
     // Arguments are in radians.
     public double deltaAdjustedAngle(double targetAngle, double currentAngle) {
-
-        return ((targetAngle - currentAngle + 180) % 360 + 360) % 360 - 180;
+        return targetAngle;
+        // return ((targetAngle - currentAngle + 180) % 360 + 360) % 360 - 180;
     }
 
     public double getDriveDistanceMeters() {
@@ -210,7 +219,13 @@ public class SwerveModule extends SubsystemBase {
         //         m_turningCANCoder.configGetMagnetOffset() - m_turningCANCoder.getAbsolutePosition());
     }
 
-    public double getTurnDegrees() {
-        return (m_turningEncoder.getPosition()) % 360;
+    public double getDriveVelocityMetersPerSecond() {
+        return m_driveEncoder.getVelocity();
     }
+
+    public double getTurnDegrees() {
+        return m_turningEncoder.getPosition() % 360;
+        // return (m_turningEncoder.getPosition() + m_offset) % 360;
+    }
+
 }

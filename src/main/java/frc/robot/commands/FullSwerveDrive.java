@@ -26,7 +26,6 @@ public class FullSwerveDrive extends CommandBase {
         this.xSpeed = xSpeed;
         this.ySpeed = ySpeed;
         this.zRotation = zRotation;
-
     }
 
     public void initialize() {
