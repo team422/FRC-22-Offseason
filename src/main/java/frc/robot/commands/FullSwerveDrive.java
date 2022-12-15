@@ -42,7 +42,7 @@ public class FullSwerveDrive extends CommandBase {
         //     swerveBase.drive(speeds);
         // } else {
         speeds = new ChassisSpeeds(xSpeed.get(), ySpeed.get(), zRotation.get());
-        swerveBase.drive(speeds);
+        // swerveBase.drive(speeds);
         // }
         // swerveBase.drive(xSpeed.get(), ySpeed.get(), zRotation.get());
     }

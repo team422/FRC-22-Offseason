@@ -4,12 +4,17 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.AutoSetSwerveState;
 import frc.robot.commands.FullSwerveDrive;
-import frc.robot.commands.Turn;
+import frc.robot.commands.StartSwerveTestingMode;
+import frc.robot.commands.SwitchSwerveWheel;
 import frc.robot.subsystems.FullSwerveBase;
 import frc.robot.subsystems.SwerveModule;
 
@@ -48,24 +53,28 @@ public class RobotContainer {
         //         Constants.DriveConstants.kSwerveTestMotorTurning2, Constants.DriveConstants.analogEncoderSwerveTesting2,
         //         1);
 
-        // 0.25904991413721545
-        // 0.8316906774930655
-        // 0.16385836674133916
-        // 0.0903746936728398
+        // 0.24643664905961252
+        // 0.008663508697619058
+        // 0.15306316494355832
+        // 0.09232824983462598
+        //         0.23578662301985037
+        // 0.008170862715626614
+        // 0.16252281335580906
+        // 0.08742928353572182
         m_RightFrontSwerveModule = new SwerveModule(Constants.DriveConstants.kFrontRightDriveMotor,
                 Constants.DriveConstants.kFrontRightTurningMotor, Constants.DriveConstants.kFrontRightEncoder,
-                0.25904991413721545);
+                0.24643664905961252 * 2); // 2
         m_LeftFrontSwerveModule = new SwerveModule(Constants.DriveConstants.kFrontLeftDriveMotor,
                 Constants.DriveConstants.kFrontLeftTurningMotor, Constants.DriveConstants.kFrontLeftEncoder,
-                0.8316906774930655);
+                0); // 3
         m_RightRearSwerveModule = new SwerveModule(Constants.DriveConstants.kRearRightDriveMotor,
                 Constants.DriveConstants.kRearRightTurningMotor, Constants.DriveConstants.kRearRightEncoder,
-                0.16385836674133916 - .25);
+                0); // 1
         m_LeftRearSwerveModule = new SwerveModule(Constants.DriveConstants.kRearLeftDriveMotor,
                 Constants.DriveConstants.kRearLeftTurningMotor, Constants.DriveConstants.kRearLeftEncoder,
-                0.0903746936728398);
-        m_SwerveModules = new SwerveModule[] { m_RightFrontSwerveModule, m_LeftFrontSwerveModule,
-                m_RightRearSwerveModule, m_LeftRearSwerveModule };
+                0); // 0
+        m_SwerveModules = new SwerveModule[] { m_LeftFrontSwerveModule, m_RightFrontSwerveModule,
+                m_LeftRearSwerveModule, m_RightRearSwerveModule };
 
         // m_Gyro = new WPI_Pigeon2(Constants.DriveConstants.kGyroPort);
         // m_RightFrontSwerveModule = new SwerveModule(Constants.DriveConstants.kFrontRightDriveMotor,
@@ -91,6 +100,12 @@ public class RobotContainer {
         m_SwerveBase.printAllVals();
     }
 
+    public void printSingleModuleData() {
+        System.out.println(m_RightRearSwerveModule.getAbsoluteRotation().getDegrees());
+        System.out.println(m_RightFrontSwerveModule.getTurnDegrees());
+
+    }
+
     /**
      * Use this method to define your button->command mappings. Buttons can be created by
      * instantiating a {@link GenericHID} or one of its subclasses ({@link
@@ -99,11 +114,14 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
         myController = new XboxController(0);
+
         // new JoystickButton(myController, 1).whenHeld(new DriveOneModule(mTest, () -> myController.getLeftX(),
         //         () -> myController.getLeftY(), () -> myController.getRightX()));
         FullSwerveDrive driveCommand = new FullSwerveDrive(m_SwerveBase, () -> -myController.getLeftX(),
                 () -> myController.getLeftY(), () -> -myController.getRightX());// , m_SwerveBase.getHeading()
         m_SwerveBase.setDefaultCommand(driveCommand);
+        new JoystickButton(myController, 1).whenPressed(new SwitchSwerveWheel(m_SwerveBase));
+        new JoystickButton(myController, 2).whenPressed(new StartSwerveTestingMode(m_SwerveBase));
 
     }
 
@@ -117,7 +135,8 @@ public class RobotContainer {
         // return m_autoCommand;
         // mTest.setDesiredState(Double);
         // return new AutoTestSequence(mTest2, mTest, 0.2);
-        return new Turn(m_SwerveBase, 50);
+        // return new Turn(m_SwerveBase, 50);
+        return new AutoSetSwerveState(m_RightFrontSwerveModule, new SwerveModuleState(0, new Rotation2d(3.14 / 2)));
         // return null;
     }
 }

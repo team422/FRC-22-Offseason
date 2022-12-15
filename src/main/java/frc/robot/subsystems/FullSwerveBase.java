@@ -14,7 +14,7 @@ import frc.robot.Constants.DriveConstants;
 
 public class FullSwerveBase extends SubsystemBase {
     /**
-     * Creates a new FullSwerveBase.
+     * Creates a new this.
      */
     // these should be in the order front left, front right, back left, back right
     SwerveModule m_swerveModules[] = new SwerveModule[4];
@@ -26,6 +26,8 @@ public class FullSwerveBase extends SubsystemBase {
     //target pose and controller
     Pose2d m_targetPose;
     PIDController m_thetaController = new PIDController(1.0, 0.0, 0.05);
+    int m_currentWheel = 0;
+    Boolean m_singleWheelMode = true;
 
     public FullSwerveBase(SwerveModule[] m_swerveModules, ADXRS450_Gyro gyro) {
         // Setting up all the modules
@@ -76,9 +78,24 @@ public class FullSwerveBase extends SubsystemBase {
     }
 
     public void printAllVals() {
-        for (SwerveModule iModule : this.m_swerveModules) {
-            System.out.println(iModule.getState());
+        // for (SwerveModule iModule : this.m_swerveModules) {
+        //     System.out.println(""+iModule.getState());
+        // }
+        for (int i = 0; i < 4; i++) {
+            System.out.println(m_swerveModuleNames[i] + m_swerveModules[i].getState());
         }
+    }
+
+    public void switchWheel() {
+        if (m_currentWheel == 3) {
+            m_currentWheel -= 4;
+        }
+        m_currentWheel = m_currentWheel + 1;
+
+    }
+
+    public void switchTestingMode() {
+        m_singleWheelMode = !m_singleWheelMode;
     }
 
     // returns the heading of the robot
@@ -101,8 +118,16 @@ public class FullSwerveBase extends SubsystemBase {
             moduleStatesFinal[i] = SwerveModuleState.optimize(moduleStates[i],
                     new Rotation2d(m_swerveModules[i].getTurnDegrees()));
         }
-        // SwerveModule.normalizeWheelSpeeds(moduleStates, DriveConstants.kMaxSpeedMetersPerSecond);
-        setModuleStates(moduleStates);
+        if (!this.m_singleWheelMode) {
+            // SwerveModule.normalizeWheelSpeeds(moduleStates, DriveConstants.kMaxSpeedMetersPerSecond);
+            setModuleStates(moduleStates);
+        } else {
+            m_swerveModules[this.m_currentWheel]
+                    .setDesiredState(moduleStates[this.m_currentWheel]);
+            System.out.println("Wanted:" + moduleStates[this.m_currentWheel]);
+            System.out.println("Actual Degree:" + m_swerveModules[this.m_currentWheel].getTurnDegrees());
+            // System.out.println("Actual" + m_swerveModules[this.m_currentWheel].getState());
+        }
 
     }
 

@@ -86,10 +86,10 @@ public final class Constants {
 
         // Units are meters.
         // Distance between centers of right and left wheels on robot
-        public static final double kTrackWidth = Units.inchesToMeters(22.5); // 22.5 in
+        public static final double kTrackWidth = Units.inchesToMeters(28); // 22.5 in
 
         // Distance between front and back wheels on robot
-        public static final double kWheelBase = Units.inchesToMeters(22.5); // 24.5 in
+        public static final double kWheelBase = Units.inchesToMeters(28); // 24.5 in
 
         // Units are meters per second
         public static final double kMaxTranslationalVelocity = 3.5; //max 4.5
