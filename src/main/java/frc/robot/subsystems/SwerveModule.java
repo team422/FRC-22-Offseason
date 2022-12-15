@@ -59,7 +59,7 @@ public class SwerveModule extends SubsystemBase {
 
         m_offset = offset;
         // m_CANCoderOffset = Rotation2d.fromDegrees(turningCANCoderOffsetDegrees);
-        System.out.println(m_turningCANCoder.getAbsolutePosition());
+        System.out.println(getAbsoluteRotation().getRadians());
 
         // m_driveMotor.setIdleMode(IdleMode.kBrake);
         // m_turningMotor.setIdleMode(IdleMode.kCoast);
@@ -210,8 +210,8 @@ public class SwerveModule extends SubsystemBase {
         System.out.println("absolute position: " + m_turningCANCoder.getAbsolutePosition());
         System.out.println("get correct degree " + getTurnDegrees());
         System.out.println("m_turningCANCoder.getAbsolutePosition() - m_offset:"
-                + (m_turningCANCoder.getAbsolutePosition() - m_offset));
-        m_turningEncoder.setPosition(m_turningCANCoder.getAbsolutePosition() - m_offset);
+                + (getAbsoluteRotation().getRadians() - m_offset));
+        m_turningEncoder.setPosition(getAbsoluteRotation().getRadians() - m_offset);
 
         System.out.println("absolute position: " + m_turningCANCoder.getAbsolutePosition());
         System.out.println("get correct degree " + getTurnDegrees());
