@@ -56,10 +56,18 @@ public class FullSwerveBase extends SubsystemBase {
                 m_swerveModules[2].getState(), m_swerveModules[3].getState());
 
         //This was literally all copy paste, these should be good for debugging
-        SmartDashboard.putNumber("Heading", getHeading().getDegrees());
-        SmartDashboard.putNumber("currentX", getPose().getX());
-        SmartDashboard.putNumber("currentY", getPose().getY());
-        SmartDashboard.putNumber("currentAngle", getPose().getRotation().getRadians());
+        // SmartDashboard.putNumber("Heading", getHeading().getDegrees());
+        // SmartDashboard.putNumber("currentX", getPose().getX());
+        // SmartDashboard.putNumber("currentY", getPose().getY());
+        // SmartDashboard.putNumber("currentAngle", getPose().getRotation().getRadians());
+        SmartDashboard.putNumber("Left Front Absolute", m_swerveModules[0].getAbsoluteRotation().getDegrees() % 360);
+        SmartDashboard.putNumber("Right Front Absolute", m_swerveModules[1].getAbsoluteRotation().getDegrees() % 360);
+        SmartDashboard.putNumber("Left Rear Absolute", m_swerveModules[2].getAbsoluteRotation().getDegrees() % 360);
+        SmartDashboard.putNumber("Right Rear Absolute", m_swerveModules[3].getAbsoluteRotation().getDegrees() % 360);
+        SmartDashboard.putNumber("Left Front encoder", m_swerveModules[0].getTurnDegrees());
+        SmartDashboard.putNumber("Right Front encoder", m_swerveModules[1].getTurnDegrees());
+        SmartDashboard.putNumber("Left Rear encoder", m_swerveModules[2].getTurnDegrees());
+        SmartDashboard.putNumber("Right Rear encoder", m_swerveModules[3].getTurnDegrees());
         // SmartDashboard.putNumber("targetPoseAngle", m_targetPose.getRotation().getRadians());
 
         for (int i = 0; i < m_swerveModules.length; i++) {
@@ -116,11 +124,11 @@ public class FullSwerveBase extends SubsystemBase {
         SwerveModuleState[] moduleStatesFinal = new SwerveModuleState[4];
         for (int i = 0; i < 4; i++) {
             moduleStatesFinal[i] = SwerveModuleState.optimize(moduleStates[i],
-                    new Rotation2d(m_swerveModules[i].getTurnDegrees()));
+                    new Rotation2d((m_swerveModules[i].getTurnDegrees()) * (Math.PI / 180)));
         }
         if (!this.m_singleWheelMode) {
             // SwerveModule.normalizeWheelSpeeds(moduleStates, DriveConstants.kMaxSpeedMetersPerSecond);
-            setModuleStates(moduleStates);
+            setModuleStates(moduleStatesFinal);
         } else {
             m_swerveModules[this.m_currentWheel]
                     .setDesiredState(moduleStates[this.m_currentWheel]);

@@ -95,7 +95,7 @@ public final class Constants {
         public static final double kMaxTranslationalVelocity = 3.5; //max 4.5
 
         // Units are radians per second
-        public static final double kMaxRotationalVelocity = 3.75; //max 5.0
+        public static final double kMaxRotationalVelocity = 1 * Math.PI; //max 5.0
         public static final double kMaxSpeedMetersPerSecond = 3.5;
         // // Max velocity
 
@@ -138,7 +138,7 @@ public final class Constants {
         public static final double kTurningI = 0.0;
         public static final double kTurningD = 0.005;
 
-        public static final double kMaxModuleAngularSpeedRadiansPerSecond = 0.000005 * Math.PI;
+        public static final double kMaxModuleAngularSpeedRadiansPerSecond = 0.005 * Math.PI;
         public static final double kMaxModuleAngularAccelerationRadiansPerSecondSquared = 0.000005 * Math.PI;
 
         // public static final SimpleMotorFeedforward driveFF = new SimpleMotorFeedforward(0.254, 0.137);
@@ -189,7 +189,9 @@ public final class Constants {
     //     public static final double kHoodStopCurrentLimit = 25.0;
 
     //   }
+    public static final class OIConstants {
 
+    }
     //   public static final class OIConstants {
     //     public static final String kXbox = "XBOX";
     //     public static final String kPS4 = "P";

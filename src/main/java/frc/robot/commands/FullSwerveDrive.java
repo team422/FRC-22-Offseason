@@ -36,14 +36,15 @@ public class FullSwerveDrive extends CommandBase {
         curXSpeed = xSpeed.get() * DriveConstants.kMaxSpeedMetersPerSecond;
         curYSpeed = ySpeed.get() * DriveConstants.kMaxSpeedMetersPerSecond;
         curZRotation = zRotation.get() * DriveConstants.kMaxAngularSpeed;
-        // if (curXSpeed != 0 || curYSpeed != 0 || curZRotation != 0) {
-        //     speeds = ChassisSpeeds.fromFieldRelativeSpeeds(curXSpeed, curYSpeed, curZRotation,
-        //             swerveBase.getGyroAngle());
-        //     swerveBase.drive(speeds);
-        // } else {
-        speeds = new ChassisSpeeds(xSpeed.get(), ySpeed.get(), zRotation.get());
-        // swerveBase.drive(speeds);
-        // }
+        if (curXSpeed != 0 || curYSpeed != 0 || curZRotation != 0) {
+            speeds = ChassisSpeeds.fromFieldRelativeSpeeds(curXSpeed, curYSpeed, curZRotation,
+                    swerveBase.getGyroAngle());
+            swerveBase.drive(speeds);
+        } else {
+            speeds = new ChassisSpeeds(xSpeed.get(), ySpeed.get(),
+                    zRotation.get() * DriveConstants.kMaxRotationalVelocity);
+            swerveBase.drive(speeds);
+        }
         // swerveBase.drive(xSpeed.get(), ySpeed.get(), zRotation.get());
     }
 

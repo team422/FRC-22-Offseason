@@ -59,7 +59,8 @@ public class SwerveModule extends SubsystemBase {
 
         m_offset = offset;
         // m_CANCoderOffset = Rotation2d.fromDegrees(turningCANCoderOffsetDegrees);
-        System.out.println(getAbsoluteRotation().getRadians());
+        // Add smart dashboard items
+        // SmartDashboard.putNumber("Drive Offset " + turningCANCoderChannel, getAbsoluteRotation().getDegrees());
 
         // m_driveMotor.setIdleMode(IdleMode.kBrake);
         // m_turningMotor.setIdleMode(IdleMode.kCoast);
@@ -121,7 +122,7 @@ public class SwerveModule extends SubsystemBase {
 
     public Rotation2d getAbsoluteRotation() {
         double angle = (1.0 - m_turningCANCoder.getAbsolutePosition()) * 2 * Math.PI;
-        return new Rotation2d(((m_turningEncoder.getPosition() * 360) % 360));
+        return new Rotation2d(((angle) % 360));
     }
 
     // public CANCoder getTurnCANcoder() {
@@ -210,8 +211,8 @@ public class SwerveModule extends SubsystemBase {
         System.out.println("absolute position: " + m_turningCANCoder.getAbsolutePosition());
         System.out.println("get correct degree " + getTurnDegrees());
         System.out.println("m_turningCANCoder.getAbsolutePosition() - m_offset:"
-                + (getAbsoluteRotation().getRadians() - m_offset));
-        m_turningEncoder.setPosition(getAbsoluteRotation().getRadians() - m_offset);
+                + (getAbsoluteRotation().getDegrees() - m_offset));
+        m_turningEncoder.setPosition(getAbsoluteRotation().getDegrees() - m_offset);
 
         System.out.println("absolute position: " + m_turningCANCoder.getAbsolutePosition());
         System.out.println("get correct degree " + getTurnDegrees());
@@ -238,7 +239,7 @@ public class SwerveModule extends SubsystemBase {
     public double getTurnDegrees() {
         // System.out.println("GET TURN DEGREES" + (m_turningEncoder.getPosition()) % 360);
         // System.out.println("getTurnDegrees with offset" + (m_turningEncoder.getPosition() * 360) % 360);
-        return ((m_turningEncoder.getPosition() * 360) % 360);
+        return (m_turningEncoder.getPosition() + 360) % 360;
         // return (m_turningEncoder.getPosition() + m_offset) % 360;
     }
 
