@@ -9,6 +9,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.AutoSetSwerveState;
 import frc.robot.commands.FullSwerveDrive;
@@ -41,6 +42,7 @@ public class RobotContainer {
     private XboxController myController;
 
     ADXRS450_Gyro m_Gyro;
+    SmartDashboard m_SmartDashboard;
 
     // private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
 
@@ -58,10 +60,11 @@ public class RobotContainer {
         // 0.008663508697619058
         // 0.15306316494355832
         // 0.09232824983462598
-        //         0.23578662301985037
+        // 0.23578662301985037
         // 0.008170862715626614
         // 0.16252281335580906
         // 0.08742928353572182
+
         m_RightFrontSwerveModule = new SwerveModule(Constants.DriveConstants.kFrontRightDriveMotor,
                 Constants.DriveConstants.kFrontRightTurningMotor, Constants.DriveConstants.kFrontRightEncoder, 266.9); // 2
         m_LeftFrontSwerveModule = new SwerveModule(Constants.DriveConstants.kFrontLeftDriveMotor,

@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.sensors.CANCoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
@@ -24,7 +25,7 @@ public class SwerveModule extends SubsystemBase {
     private final RelativeEncoder m_driveEncoder;
     private final RelativeEncoder m_turningEncoder;
 
-    private final AnalogEncoder m_turningCANCoder; // THIS MAY HAVE TO BE CHANGED BACK TO AN ANALOG ENCODER
+    private final CANCoder m_turningCANCoder; // THIS MAY HAVE TO BE CHANGED BACK TO AN ANALOG ENCODER
 
     // absolute offset for the CANCoder so that the wheels can be aligned when the
     // robot is turned on
@@ -53,7 +54,7 @@ public class SwerveModule extends SubsystemBase {
         m_driveEncoder = m_driveMotor.getEncoder();
         m_turningEncoder = m_turningMotor.getEncoder();
 
-        m_turningCANCoder = new AnalogEncoder(turningCANCoderChannel);
+        m_turningCANCoder = new CANCoder(turningCANCoderChannel);
         // m_turningCANCoder.configAbsoluteSensorRange(AbsoluteSensorRange.Unsigned_0_to_360);
         // m_turningCANCoder.setPosition(0);
 

@@ -1,14 +1,14 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 
@@ -19,7 +19,8 @@ public class FullSwerveBase extends SubsystemBase {
     // these should be in the order front left, front right, back left, back right
     SwerveModule m_swerveModules[] = new SwerveModule[4];
     Gyro m_gyro;
-    SwerveDriveOdometry m_odometry;
+    SwerveDrivePoseEstimator m_odometry;
+    // Swerve Drive Odometry with vision correction
 
     String m_swerveModuleNames[] = { "Left Front", "Right Front", "Left Rear", "Right Rear" };
 
@@ -31,6 +32,7 @@ public class FullSwerveBase extends SubsystemBase {
 
     public FullSwerveBase(SwerveModule[] m_swerveModules, ADXRS450_Gyro gyro) {
         // Setting up all the modules
+
         this.m_swerveModules = m_swerveModules;
         for (SwerveModule module : m_swerveModules) {
             module.resetDistance();
@@ -46,20 +48,41 @@ public class FullSwerveBase extends SubsystemBase {
         m_gyro.reset();
 
         // odometry stuff
-        m_odometry = new SwerveDriveOdometry(DriveConstants.kDriveKinematics, this.getHeading());
+        // SwerveModulePositions[] modulePositions = new SwerveModulePositions[4];
+        // double[][] stdDeviations = new double[3][1];
+        // Matrix<N3, N1> stdDeviations = new Matrix(new Nat<N3>(3), new Nat<N1>(1));
+
+        // stdDeviations.set(0, 0, 0.1);
+        // stdDeviations.set(1, 0, 0.1);
+        // stdDeviations.set(2, 0, 0.1);
+        SwerveModulePosition[] modulePositions = new SwerveModulePosition[4];
+        // SwerveModulePositions[] modulePositions = new SwerveModulePositions[4];
+        // Matrix<Integer, Double> stdDevMatrix = new Matrix<>(3, 4);
+        // Rotation2d gyroAngle,
+        //   Pose2d initialPoseMeters,
+        //   SwerveDriveKinematics kinematics,
+        //   Matrix<N3, N1> stateStdDevs,
+        //   Matrix<N1, N1> localMeasurementStdDevs,
+        //   Matrix<N3, N1> visionMeasurementStdDevs)
+        // m_odometry = new SwerveDrivePoseEstimator(this.getHeading(), new Pose2d(), DriveConstants.kDriveKinematics,stdDeviations, stdDeviations, stdDeviations);
+        m_odometry = new SwerveDrivePoseEstimator(DriveConstants.kDriveKinematics, this.getHeading(), modulePositions,
+                new Pose2d());
+        // // DriveConstants.kDriveKinematics,  
     }
 
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
+        /*
         m_odometry.update(this.getHeading(), m_swerveModules[0].getState(), m_swerveModules[1].getState(),
                 m_swerveModules[2].getState(), m_swerveModules[3].getState());
-
+         */
         //This was literally all copy paste, these should be good for debugging
         // SmartDashboard.putNumber("Heading", getHeading().getDegrees());
         // SmartDashboard.putNumber("currentX", getPose().getX());
         // SmartDashboard.putNumber("currentY", getPose().getY());
         // SmartDashboard.putNumber("currentAngle", getPose().getRotation().getRadians());
+        /*
         SmartDashboard.putNumber("Left Front Absolute", m_swerveModules[0].getAbsoluteRotation().getDegrees() % 360);
         SmartDashboard.putNumber("Right Front Absolute", m_swerveModules[1].getAbsoluteRotation().getDegrees() % 360);
         SmartDashboard.putNumber("Left Rear Absolute", m_swerveModules[2].getAbsoluteRotation().getDegrees() % 360);
@@ -68,21 +91,23 @@ public class FullSwerveBase extends SubsystemBase {
         SmartDashboard.putNumber("Right Front encoder", m_swerveModules[1].getTurnDegrees());
         SmartDashboard.putNumber("Left Rear encoder", m_swerveModules[2].getTurnDegrees());
         SmartDashboard.putNumber("Right Rear encoder", m_swerveModules[3].getTurnDegrees());
+        */
         // SmartDashboard.putNumber("targetPoseAngle", m_targetPose.getRotation().getRadians());
-
+        /*
         for (int i = 0; i < m_swerveModules.length; i++) {
             SmartDashboard.putNumber(m_swerveModuleNames[i] + ": Drive Speed",
                     m_swerveModules[i].getDriveVelocityMetersPerSecond());
             SmartDashboard.putNumber(m_swerveModuleNames[i] + ": Rotation",
                     m_swerveModules[i].getTurnDegrees());
         }
-
+         */
     }
 
     // returns estimated position based on odometry
     public Pose2d getPose() {
         // return new Pose2d();
-        return m_odometry.getPoseMeters();
+        // return m_odometry.getPoseMeters();
+        return new Pose2d();
     }
 
     public void printAllVals() {
@@ -155,5 +180,9 @@ public class FullSwerveBase extends SubsystemBase {
 
     public Rotation2d getGyroAngle() {
         return m_gyro.getRotation2d();
+    }
+
+    public void addVisionOdometry(Pose2d pose, double timestamp) {
+
     }
 }
