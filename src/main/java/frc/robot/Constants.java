@@ -147,7 +147,8 @@ public final class Constants {
 
         // The drive encoder reports in RPM by default. Calculate the conversion factor
         // to make it report in meters per second.
-        public static final double kDriveGearRatio = 21.428;
+        //hi (hazel was here)
+        public static final double kDriveGearRatio = 8.14;
         public static final double kDriveConversionFactor = (kWheelDiameterMeters * Math.PI) / kDriveGearRatio;
 
         public static final double kTurnPositionConversionFactor = 18;

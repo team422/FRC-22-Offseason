@@ -124,8 +124,10 @@ public class RobotContainer {
         FullSwerveDrive driveCommand = new FullSwerveDrive(m_SwerveBase, () -> -controls.getLeftDriveX(),
                 () -> controls.getLeftDriveY(), () -> -controls.getRightDriveX());// , m_SwerveBase.getHeading()
         m_SwerveBase.setDefaultCommand(driveCommand);
-        controls.getAButtonOperator().whileActiveOnce(new SwitchSwerveWheel(m_SwerveBase));
-        controls.getBButtonOperator().whileActiveOnce(new StartSwerveTestingMode(m_SwerveBase));
+        controls.getAButtonOperator().whileTrue(new SwitchSwerveWheel(m_SwerveBase));
+        // while active once is now deprecated
+
+        controls.getBButtonOperator().whileTrue(new StartSwerveTestingMode(m_SwerveBase));
 
     }
 
