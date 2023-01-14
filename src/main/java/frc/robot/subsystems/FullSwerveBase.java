@@ -7,8 +7,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 
@@ -28,15 +28,15 @@ public class FullSwerveBase extends SubsystemBase {
     Pose2d m_targetPose;
     PIDController m_thetaController = new PIDController(1.0, 0.0, 0.05);
     int m_currentWheel = 0;
-    Boolean m_singleWheelMode = true;
+    Boolean m_singleWheelMode = false;
 
-    public FullSwerveBase(SwerveModule[] m_swerveModules, ADXRS450_Gyro gyro) {
+    public FullSwerveBase(SwerveModule[] m_swerveModules, Gyro gyro) {
         // Setting up all the modules
 
         this.m_swerveModules = m_swerveModules;
         for (SwerveModule module : m_swerveModules) {
             module.resetDistance();
-            module.syncTurningEncoders();
+            // module.syncTurningEncoders();
             // module.DONTUSETHISRESETTURNINGENCODER();
         }
         // m_targetPose = m_odometry.getPoseMeters();
@@ -56,6 +56,10 @@ public class FullSwerveBase extends SubsystemBase {
         // stdDeviations.set(1, 0, 0.1);
         // stdDeviations.set(2, 0, 0.1);
         SwerveModulePosition[] modulePositions = new SwerveModulePosition[4];
+        for (int i = 0; i < 4; i++) {
+            modulePositions[i] = new SwerveModulePosition(m_swerveModules[i].getDriveDistanceMeters(),
+                    m_swerveModules[i].getTurnDegrees());
+        }
         // SwerveModulePositions[] modulePositions = new SwerveModulePositions[4];
         // Matrix<Integer, Double> stdDevMatrix = new Matrix<>(3, 4);
         // Rotation2d gyroAngle,
@@ -73,7 +77,7 @@ public class FullSwerveBase extends SubsystemBase {
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
-        /*
+        /* 
         m_odometry.update(this.getHeading(), m_swerveModules[0].getState(), m_swerveModules[1].getState(),
                 m_swerveModules[2].getState(), m_swerveModules[3].getState());
          */
@@ -82,16 +86,16 @@ public class FullSwerveBase extends SubsystemBase {
         // SmartDashboard.putNumber("currentX", getPose().getX());
         // SmartDashboard.putNumber("currentY", getPose().getY());
         // SmartDashboard.putNumber("currentAngle", getPose().getRotation().getRadians());
-        /*
+
         SmartDashboard.putNumber("Left Front Absolute", m_swerveModules[0].getAbsoluteRotation().getDegrees() % 360);
         SmartDashboard.putNumber("Right Front Absolute", m_swerveModules[1].getAbsoluteRotation().getDegrees() % 360);
         SmartDashboard.putNumber("Left Rear Absolute", m_swerveModules[2].getAbsoluteRotation().getDegrees() % 360);
         SmartDashboard.putNumber("Right Rear Absolute", m_swerveModules[3].getAbsoluteRotation().getDegrees() % 360);
-        SmartDashboard.putNumber("Left Front encoder", m_swerveModules[0].getTurnDegrees());
-        SmartDashboard.putNumber("Right Front encoder", m_swerveModules[1].getTurnDegrees());
-        SmartDashboard.putNumber("Left Rear encoder", m_swerveModules[2].getTurnDegrees());
-        SmartDashboard.putNumber("Right Rear encoder", m_swerveModules[3].getTurnDegrees());
-        */
+        SmartDashboard.putNumber("Left Front encoder", m_swerveModules[0].getTurnDegrees().getDegrees());
+        SmartDashboard.putNumber("Right Front encoder", m_swerveModules[1].getTurnDegrees().getDegrees());
+        SmartDashboard.putNumber("Left Rear encoder", m_swerveModules[2].getTurnDegrees().getDegrees());
+        SmartDashboard.putNumber("Right Rear encoder", m_swerveModules[3].getTurnDegrees().getDegrees());
+
         // SmartDashboard.putNumber("targetPoseAngle", m_targetPose.getRotation().getRadians());
         /*
         for (int i = 0; i < m_swerveModules.length; i++) {
@@ -149,7 +153,7 @@ public class FullSwerveBase extends SubsystemBase {
         SwerveModuleState[] moduleStatesFinal = new SwerveModuleState[4];
         for (int i = 0; i < 4; i++) {
             moduleStatesFinal[i] = SwerveModuleState.optimize(moduleStates[i],
-                    new Rotation2d((m_swerveModules[i].getTurnDegrees()) * (Math.PI / 180)));
+                    m_swerveModules[i].getTurnDegrees());
         }
         if (!this.m_singleWheelMode) {
             // SwerveModule.normalizeWheelSpeeds(moduleStates, DriveConstants.kMaxSpeedMetersPerSecond);

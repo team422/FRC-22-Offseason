@@ -10,7 +10,6 @@ import com.revrobotics.SparkMaxPIDController;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.AnalogEncoder;
 // import edu.wpi.first.wpilibj.drive.RobotDriveBase.MotorType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -104,9 +103,9 @@ public class SwerveModule extends SubsystemBase {
         // double m1 = m_turningEncoder.getPosition() % 360.0;
         // double m2 = (m1 < 0) ? m1 + 360 : m1;
 
-        double m2 = (this.getTurnDegrees() % 360 + 360) % 360;
+        // double m2 = (this.getTurnDegrees() % 360 + 360) % 360;
 
-        return new SwerveModuleState(m_driveEncoder.getVelocity(), new Rotation2d(m2 * Math.PI / 180));
+        return new SwerveModuleState(m_driveEncoder.getVelocity(), this.getTurnDegrees());
     }
 
     public CANSparkMax getTurnMotor() {
@@ -118,12 +117,12 @@ public class SwerveModule extends SubsystemBase {
     }
 
     public double getAbsoluteEncoder() {
-        return m_turningCANCoder.getAbsolutePosition();
+        return m_turningCANCoder.getAbsolutePosition() / 360;
     }
 
     public Rotation2d getAbsoluteRotation() {
-        double angle = (1.0 - m_turningCANCoder.getAbsolutePosition()) * 2 * Math.PI;
-        return new Rotation2d(((angle) % 360));
+        double angle = (1.0 - m_turningCANCoder.getAbsolutePosition() / 180) * 2 * Math.PI;
+        return new Rotation2d(angle);
     }
 
     // public CANCoder getTurnCANcoder() {
@@ -144,9 +143,9 @@ public class SwerveModule extends SubsystemBase {
      */
     public void setDesiredState(SwerveModuleState state) {
 
-        Rotation2d curAngle = Rotation2d.fromDegrees(this.getTurnDegrees());
+        // Rotation2d curAngle = Rotation2d.fromDegrees(this.getTurnDegrees());
 
-        double delta = deltaAdjustedAngle((state.angle.getDegrees() + m_offset) % 360, curAngle.getDegrees());
+        // double delta = deltaAdjustedAngle((state.angle.getDegrees() + m_offset) % 360, curAngle.getDegrees());
 
         // // Calculate the drive motor output from the drive PID controller.
         double driveOutput = state.speedMetersPerSecond;
@@ -156,7 +155,7 @@ public class SwerveModule extends SubsystemBase {
         //     delta -= Math.signum(delta) * 180;
         // }
 
-        adjustedAngle = Rotation2d.fromDegrees(delta + curAngle.getDegrees());
+        // adjustedAngle = Rotation2d.fromDegrees(delta + curAngle.getDegrees());
 
         m_turningController.setReference(
                 state.angle.getDegrees(),
@@ -169,7 +168,7 @@ public class SwerveModule extends SubsystemBase {
     }
 
     public void setOpenLoopState(SwerveModuleState state) {
-        Rotation2d curAngle = Rotation2d.fromDegrees(this.getTurnDegrees());
+        Rotation2d curAngle = this.getTurnDegrees();
 
         // double delta = deltaAdjustedAngle(state.angle.getDegrees(), curAngle.getDegrees());
 
@@ -237,10 +236,12 @@ public class SwerveModule extends SubsystemBase {
         return m_driveEncoder.getVelocity();
     }
 
-    public double getTurnDegrees() {
+    public Rotation2d getTurnDegrees() {
         // System.out.println("GET TURN DEGREES" + (m_turningEncoder.getPosition()) % 360);
         // System.out.println("getTurnDegrees with offset" + (m_turningEncoder.getPosition() * 360) % 360);
-        return (m_turningEncoder.getPosition() + 360) % 360;
+        return Rotation2d.fromDegrees(((m_turningEncoder.getPosition() % 360) + 360));
+        // return m_turningEncoder.getPosition() + m_offset;
+        // return (m_turningEncoder.getPosition() + m_offset % 360) + 360;
         // return (m_turningEncoder.getPosition() + m_offset) % 360;
     }
 

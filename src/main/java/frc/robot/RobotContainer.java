@@ -4,9 +4,10 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.sensors.WPI_Pigeon2;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -41,7 +42,7 @@ public class RobotContainer {
 
     private XboxController myController;
 
-    ADXRS450_Gyro m_Gyro;
+    WPI_Pigeon2 m_Gyro;
     SmartDashboard m_SmartDashboard;
 
     // private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
@@ -79,20 +80,20 @@ public class RobotContainer {
         m_SwerveModules = new SwerveModule[] { m_LeftFrontSwerveModule, m_RightFrontSwerveModule,
                 m_LeftRearSwerveModule, m_RightRearSwerveModule };
 
-        // m_Gyro = new WPI_Pigeon2(Constants.DriveConstants.kGyroPort);
-        // m_RightFrontSwerveModule = new SwerveModule(Constants.DriveConstants.kFrontRightDriveMotor,
-        //         Constants.DriveConstants.kFrontRightTurningMotor, Constants.DriveConstants.kFrontRightEncoder,
-        //         270);
-        // m_LeftFrontSwerveModule = new SwerveModule(Constants.DriveConstants.kFrontLeftDriveMotor,
-        //         Constants.DriveConstants.kFrontLeftTurningMotor, Constants.DriveConstants.kFrontLeftEncoder, 90);
-        // m_RightRearSwerveModule = new SwerveModule(Constants.DriveConstants.kRearRightDriveMotor,
-        //         Constants.DriveConstants.kRearRightTurningMotor, Constants.DriveConstants.kRearRightEncoder, 90);
-        // m_LeftRearSwerveModule = new SwerveModule(Constants.DriveConstants.kRearLeftDriveMotor,
-        //         Constants.DriveConstants.kRearLeftTurningMotor, Constants.DriveConstants.kRearLeftEncoder, 90);
-        // m_SwerveModules = new SwerveModule[] { m_LeftFrontSwerveModule, m_RightFrontSwerveModule,
-        //         m_LeftRearSwerveModule, m_RightRearSwerveModule };
+        m_Gyro = new WPI_Pigeon2(Constants.DriveConstants.kGyroPort);
+        // // m_RightFrontSwerveModule = new SwerveModule(Constants.DriveConstants.kFrontRightDriveMotor,
+        // //         Constants.DriveConstants.kFrontRightTurningMotor, Constants.DriveConstants.kFrontRightEncoder,
+        // //         270);
+        // // m_LeftFrontSwerveModule = new SwerveModule(Constants.DriveConstants.kFrontLeftDriveMotor,
+        // //         Constants.DriveConstants.kFrontLeftTurningMotor, Constants.DriveConstants.kFrontLeftEncoder, 90);
+        // // m_RightRearSwerveModule = new SwerveModule(Constants.DriveConstants.kRearRightDriveMotor,
+        // //         Constants.DriveConstants.kRearRightTurningMotor, Constants.DriveConstants.kRearRightEncoder, 90);
+        // // m_LeftRearSwerveModule = new SwerveModule(Constants.DriveConstants.kRearLeftDriveMotor,
+        // //         Constants.DriveConstants.kRearLeftTurningMotor, Constants.DriveConstants.kRearLeftEncoder, 90);
+        // // m_SwerveModules = new SwerveModule[] { m_LeftFrontSwerveModule, m_RightFrontSwerveModule,
+        // //         m_LeftRearSwerveModule, m_RightRearSwerveModule };
 
-        m_Gyro = new ADXRS450_Gyro();
+        // m_Gyro = new ADXRS450_Gyro();
 
         m_SwerveBase = new FullSwerveBase(m_SwerveModules, m_Gyro);
 

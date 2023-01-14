@@ -108,22 +108,22 @@ public final class Constants {
                 new Translation2d(-kWheelBase / 2.0, kTrackWidth / 2.0), // rear left
                 new Translation2d(-kWheelBase / 2.0, -kTrackWidth / 2.0) // rear right
         );
-        public static final int kFrontRightDriveMotor = 39;
-        public static final int kFrontRightTurningMotor = 38;
-        public static final int kFrontRightEncoder = 2;
+        public static final int kFrontRightDriveMotor = 23;
+        public static final int kFrontRightTurningMotor = 2;
+        public static final int kFrontRightEncoder = 1;
 
-        public static final int kFrontLeftDriveMotor = 2;
-        public static final int kFrontLeftTurningMotor = 23;
-        public static final int kFrontLeftEncoder = 3;
+        public static final int kFrontLeftDriveMotor = 1;
+        public static final int kFrontLeftTurningMotor = 16;
+        public static final int kFrontLeftEncoder = 7;
 
-        public static final int kRearRightDriveMotor = 3;
-        public static final int kRearRightTurningMotor = 32;
-        public static final int kRearRightEncoder = 1;
+        public static final int kRearRightDriveMotor = 38;
+        public static final int kRearRightTurningMotor = 39;
+        public static final int kRearRightEncoder = 3;
 
-        public static final int kRearLeftDriveMotor = 16;
-        public static final int kRearLeftTurningMotor = 1;
-        public static final int kRearLeftEncoder = 0;
-        public static final int kGyroPort = 0;
+        public static final int kRearLeftDriveMotor = 3;
+        public static final int kRearLeftTurningMotor = 32;
+        public static final int kRearLeftEncoder = 2;
+        public static final int kGyroPort = 22;
 
         // public static final boolean kGyroReversed = false;
     }
