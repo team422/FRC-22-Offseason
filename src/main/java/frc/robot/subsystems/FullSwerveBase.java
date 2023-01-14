@@ -30,14 +30,17 @@ public class FullSwerveBase extends SubsystemBase {
     int m_currentWheel = 0;
     Boolean m_singleWheelMode = false;
 
-    public FullSwerveBase(SwerveModule[] m_swerveModules, Gyro gyro) {
+    public FullSwerveBase(SwerveModule[] swerveModules, Gyro gyro) {
         // Setting up all the modules
 
-        this.m_swerveModules = m_swerveModules;
+        this.m_swerveModules = swerveModules;
         for (SwerveModule module : m_swerveModules) {
             module.resetDistance();
-            // module.syncTurningEncoders();
+            module.syncTurningEncoders();
             // module.DONTUSETHISRESETTURNINGENCODER();
+        }
+        for (SwerveModule module : m_swerveModules) {
+            module.setDesiredState(new SwerveModuleState(0.0, module.getAbsoluteRotation()));
         }
         // m_targetPose = m_odometry.getPoseMeters();
         m_thetaController.reset();
@@ -87,10 +90,10 @@ public class FullSwerveBase extends SubsystemBase {
         // SmartDashboard.putNumber("currentY", getPose().getY());
         // SmartDashboard.putNumber("currentAngle", getPose().getRotation().getRadians());
 
-        SmartDashboard.putNumber("Left Front Absolute", m_swerveModules[0].getAbsoluteRotation().getDegrees() % 360);
-        SmartDashboard.putNumber("Right Front Absolute", m_swerveModules[1].getAbsoluteRotation().getDegrees() % 360);
-        SmartDashboard.putNumber("Left Rear Absolute", m_swerveModules[2].getAbsoluteRotation().getDegrees() % 360);
-        SmartDashboard.putNumber("Right Rear Absolute", m_swerveModules[3].getAbsoluteRotation().getDegrees() % 360);
+        SmartDashboard.putNumber("Left Front Absolute", m_swerveModules[0].getAbsoluteRotation().getDegrees());
+        SmartDashboard.putNumber("Right Front Absolute", m_swerveModules[1].getAbsoluteRotation().getDegrees());
+        SmartDashboard.putNumber("Left Rear Absolute", m_swerveModules[2].getAbsoluteRotation().getDegrees());
+        SmartDashboard.putNumber("Right Rear Absolute", m_swerveModules[3].getAbsoluteRotation().getDegrees());
         SmartDashboard.putNumber("Left Front encoder", m_swerveModules[0].getTurnDegrees().getDegrees());
         SmartDashboard.putNumber("Right Front encoder", m_swerveModules[1].getTurnDegrees().getDegrees());
         SmartDashboard.putNumber("Left Rear encoder", m_swerveModules[2].getTurnDegrees().getDegrees());

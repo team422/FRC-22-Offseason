@@ -67,18 +67,18 @@ public class RobotContainer {
         // 0.08742928353572182
 
         m_RightFrontSwerveModule = new SwerveModule(Constants.DriveConstants.kFrontRightDriveMotor,
-                Constants.DriveConstants.kFrontRightTurningMotor, Constants.DriveConstants.kFrontRightEncoder, 266.9); // 2
+                Constants.DriveConstants.kFrontRightTurningMotor, Constants.DriveConstants.kFrontRightEncoder, 147.3); // 2 266.9
         m_LeftFrontSwerveModule = new SwerveModule(Constants.DriveConstants.kFrontLeftDriveMotor,
                 Constants.DriveConstants.kFrontLeftTurningMotor, Constants.DriveConstants.kFrontLeftEncoder,
-                326); // 3
+                142.0); // 3
         m_RightRearSwerveModule = new SwerveModule(Constants.DriveConstants.kRearRightDriveMotor,
                 Constants.DriveConstants.kRearRightTurningMotor, Constants.DriveConstants.kRearRightEncoder,
-                296.5); // 1
+                205.7); // 1
         m_LeftRearSwerveModule = new SwerveModule(Constants.DriveConstants.kRearLeftDriveMotor,
                 Constants.DriveConstants.kRearLeftTurningMotor, Constants.DriveConstants.kRearLeftEncoder,
-                325.5); // 0
-        m_SwerveModules = new SwerveModule[] { m_LeftFrontSwerveModule, m_RightFrontSwerveModule,
-                m_LeftRearSwerveModule, m_RightRearSwerveModule };
+                152.2); // 0
+        m_SwerveModules = new SwerveModule[] { m_RightFrontSwerveModule, m_LeftFrontSwerveModule,
+                m_RightRearSwerveModule, m_LeftRearSwerveModule };
 
         m_Gyro = new WPI_Pigeon2(Constants.DriveConstants.kGyroPort);
         // // m_RightFrontSwerveModule = new SwerveModule(Constants.DriveConstants.kFrontRightDriveMotor,

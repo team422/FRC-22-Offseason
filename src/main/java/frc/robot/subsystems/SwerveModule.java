@@ -117,12 +117,12 @@ public class SwerveModule extends SubsystemBase {
     }
 
     public double getAbsoluteEncoder() {
-        return m_turningCANCoder.getAbsolutePosition() / 360;
+        return m_turningCANCoder.getAbsolutePosition();
     }
 
     public Rotation2d getAbsoluteRotation() {
-        double angle = (1.0 - m_turningCANCoder.getAbsolutePosition() / 180) * 2 * Math.PI;
-        return new Rotation2d(angle);
+        // double angle = (Math.abs((1.0 - m_turningCANCoder.getAbsolutePosition() / 180)) * 2 * Math.PI); FOR ANALOG
+        return Rotation2d.fromDegrees(m_turningCANCoder.getAbsolutePosition());
     }
 
     // public CANCoder getTurnCANcoder() {
@@ -239,7 +239,7 @@ public class SwerveModule extends SubsystemBase {
     public Rotation2d getTurnDegrees() {
         // System.out.println("GET TURN DEGREES" + (m_turningEncoder.getPosition()) % 360);
         // System.out.println("getTurnDegrees with offset" + (m_turningEncoder.getPosition() * 360) % 360);
-        return Rotation2d.fromDegrees(((m_turningEncoder.getPosition() % 360) + 360));
+        return Rotation2d.fromDegrees(Math.abs(m_turningEncoder.getPosition() % 360));
         // return m_turningEncoder.getPosition() + m_offset;
         // return (m_turningEncoder.getPosition() + m_offset % 360) + 360;
         // return (m_turningEncoder.getPosition() + m_offset) % 360;
