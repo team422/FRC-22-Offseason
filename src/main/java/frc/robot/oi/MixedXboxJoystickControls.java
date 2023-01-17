@@ -124,6 +124,16 @@ public class MixedXboxJoystickControls implements UserControls {
     }
 
     @Override
+    public Trigger getAButtonOperator() {
+        return new Trigger(() -> operatorController.getAButtonPressed());
+    }
+
+    @Override
+    public Trigger getBButtonOperator() {
+        return new Trigger(() -> operatorController.getBButtonPressed());
+    }
+
+    @Override
     public Trigger getClimbAuto() {
         return new Trigger();
     }

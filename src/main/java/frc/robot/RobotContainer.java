@@ -20,6 +20,7 @@ import frc.robot.oi.MixedXboxJoystickControls;
 import frc.robot.oi.UserControls;
 import frc.robot.subsystems.FullSwerveBase;
 import frc.robot.subsystems.SwerveModule;
+import frc.robot.subsystems.Vision;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -43,6 +44,7 @@ public class RobotContainer {
     private XboxController myController;
 
     WPI_Pigeon2 m_Gyro;
+    Vision m_Vision;
     SmartDashboard m_SmartDashboard;
 
     // private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
@@ -67,21 +69,23 @@ public class RobotContainer {
         // 0.08742928353572182
 
         m_RightFrontSwerveModule = new SwerveModule(Constants.DriveConstants.kFrontRightDriveMotor,
-                Constants.DriveConstants.kFrontRightTurningMotor, Constants.DriveConstants.kFrontRightEncoder, 324.9); // 2 266.9
+                Constants.DriveConstants.kFrontRightTurningMotor, Constants.DriveConstants.kFrontRightEncoder,
+                322.8); // 2 266.9
         m_LeftFrontSwerveModule = new SwerveModule(Constants.DriveConstants.kFrontLeftDriveMotor,
                 Constants.DriveConstants.kFrontLeftTurningMotor, Constants.DriveConstants.kFrontLeftEncoder,
-                324.2); // 3
+                324.10); // 3
         m_RightRearSwerveModule = new SwerveModule(Constants.DriveConstants.kRearRightDriveMotor,
                 Constants.DriveConstants.kRearRightTurningMotor, Constants.DriveConstants.kRearRightEncoder,
-                23.5); // 1
+                23.18); // 1
         m_LeftRearSwerveModule = new SwerveModule(Constants.DriveConstants.kRearLeftDriveMotor,
                 Constants.DriveConstants.kRearLeftTurningMotor, Constants.DriveConstants.kRearLeftEncoder,
-                333.5); // 0
+                334.16); // 0 
         m_SwerveModules = new SwerveModule[] { m_LeftFrontSwerveModule, m_RightFrontSwerveModule,
                 m_LeftRearSwerveModule,
                 m_RightRearSwerveModule };
 
         m_Gyro = new WPI_Pigeon2(Constants.DriveConstants.kGyroPort);
+
         // // m_RightFrontSwerveModule = new SwerveModule(Constants.DriveConstants.kFrontRightDriveMotor,
         // //         Constants.DriveConstants.kFrontRightTurningMotor, Constants.DriveConstants.kFrontRightEncoder,
         // //         270);
@@ -97,6 +101,8 @@ public class RobotContainer {
         // m_Gyro = new ADXRS450_Gyro();
 
         m_SwerveBase = new FullSwerveBase(m_SwerveModules, m_Gyro);
+
+        // m_Vision = new Vision(new PhotonCamera(Constants.Vision.firstCameraName), m_SwerveBase);
 
         configureButtonBindings();
     }
@@ -126,10 +132,10 @@ public class RobotContainer {
         FullSwerveDrive driveCommand = new FullSwerveDrive(m_SwerveBase, () -> -controls.getLeftDriveX(),
                 () -> controls.getLeftDriveY(), () -> -controls.getRightDriveX());// , m_SwerveBase.getHeading()
         m_SwerveBase.setDefaultCommand(driveCommand);
-        controls.getAButtonOperator().whileTrue(new SwitchSwerveWheel(m_SwerveBase));
+        controls.getAButtonOperator().onTrue(new SwitchSwerveWheel(m_SwerveBase));
         // while active once is now deprecated
 
-        controls.getBButtonOperator().whileTrue(new StartSwerveTestingMode(m_SwerveBase));
+        controls.getBButtonOperator().onTrue(new StartSwerveTestingMode(m_SwerveBase));
 
     }
 

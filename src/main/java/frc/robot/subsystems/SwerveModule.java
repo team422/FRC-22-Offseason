@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.ControlType;
@@ -54,7 +55,7 @@ public class SwerveModule extends SubsystemBase {
         m_turningEncoder = m_turningMotor.getEncoder();
 
         m_turningCANCoder = new CANCoder(turningCANCoderChannel);
-        // m_turningCANCoder.configAbsoluteSensorRange(AbsoluteSensorRange.Unsigned_0_to_360);
+        m_turningCANCoder.configAbsoluteSensorRange(AbsoluteSensorRange.Unsigned_0_to_360);
         // m_turningCANCoder.setPosition(0);
 
         m_offset = offset;
@@ -74,7 +75,7 @@ public class SwerveModule extends SubsystemBase {
         m_driveEncoder.setPositionConversionFactor(ModuleConstants.kDriveConversionFactor);
 
         m_turningEncoder.setVelocityConversionFactor((360.0 / ModuleConstants.kTurnPositionConversionFactor) / 60.0);
-        m_turningEncoder.setPositionConversionFactor(360.0 / ModuleConstants.kTurnPositionConversionFactor);
+        m_turningEncoder.setPositionConversionFactor(-(360.0 / ModuleConstants.kTurnPositionConversionFactor)); // FIX THIS LATER ****
 
         m_turningController = m_turningMotor.getPIDController();
         m_driveController = m_driveMotor.getPIDController();
@@ -207,15 +208,16 @@ public class SwerveModule extends SubsystemBase {
     }
 
     public void syncTurningEncoders() {
-        System.out.println("SYNCING");
-        System.out.println("absolute position: " + m_turningCANCoder.getAbsolutePosition());
-        System.out.println("get correct degree " + getTurnDegrees());
-        System.out.println("m_turningCANCoder.getAbsolutePosition() - m_offset:"
-                + (getAbsoluteRotation().getDegrees() - m_offset));
-        m_turningEncoder.setPosition(getAbsoluteRotation().getDegrees() - m_offset);
+        // System.out.println("SYNCING");
+        // System.out.println("absolute position: " + m_turningCANCoder.getAbsolutePosition());
+        // System.out.println("get correct degree " + getTurnDegrees());
+        // System.out.println("m_turningCANCoder.getAbsolutePosition() - m_offset:"
+        //         + (getAbsoluteRotation().getDegrees() - m_offset));
+        // m_turningEncoder.setPosition(getAbsoluteRotation().getDegrees() - m_offset);
 
-        System.out.println("absolute position: " + m_turningCANCoder.getAbsolutePosition());
-        System.out.println("get correct degree " + getTurnDegrees());
+        // System.out.println("absolute position: " + m_turningCANCoder.getAbsolutePosition());
+        // System.out.println("get correct degree " + getTurnDegrees());
+        m_turningEncoder.setPosition(getAbsoluteRotation().getDegrees());
     }
 
     public void DONTUSETHISRESETTURNINGENCODER() {
@@ -227,9 +229,9 @@ public class SwerveModule extends SubsystemBase {
         // Reset the cumulative rotation counts of the SparkMax motors
         m_turningEncoder.setPosition(0.0);
 
-        // m_turningCANCoder.setPosition(0.0);
-        // m_turningCANCoder.configMagnetOffset(
-        //         m_turningCANCoder.configGetMagnetOffset() - m_turningCANCoder.getAbsolutePosition());
+        m_turningCANCoder.setPosition(0.0);
+        m_turningCANCoder.configMagnetOffset(
+                m_turningCANCoder.configGetMagnetOffset() - m_turningCANCoder.getAbsolutePosition());
     }
 
     public double getDriveVelocityMetersPerSecond() {
@@ -239,7 +241,7 @@ public class SwerveModule extends SubsystemBase {
     public Rotation2d getTurnDegrees() {
         // System.out.println("GET TURN DEGREES" + (m_turningEncoder.getPosition()) % 360);
         // System.out.println("getTurnDegrees with offset" + (m_turningEncoder.getPosition() * 360) % 360);
-        return Rotation2d.fromDegrees(m_turningEncoder.getPosition() % 360);
+        return Rotation2d.fromDegrees(((m_turningEncoder.getPosition() % 360) + 360) % 360);
         // return m_turningEncoder.getPosition() + m_offset;
         // return (m_turningEncoder.getPosition() + m_offset % 360) + 360;
         // return (m_turningEncoder.getPosition() + m_offset) % 360;

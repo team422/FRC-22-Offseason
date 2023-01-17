@@ -13,6 +13,10 @@ import edu.wpi.first.math.util.Units;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+    public static final class Vision {
+        public static final String firstCameraName = "Front Camera";
+    }
+
     public static final class ElectricalConstants {
         // public static final PneumaticsModuleType kPneumaticHub = PneumaticsModuleType.CTREPCM;
         // public static final ModuleType kPowerDistributionModule = ModuleType.kCTRE;
@@ -103,10 +107,10 @@ public final class Constants {
         // // Positive x values represent moving toward the front of the robot 
         // // Positive y values represent moving toward the left of the robot.
         public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
-                new Translation2d(kWheelBase / 2.0, kTrackWidth / 2.0), // front left
-                new Translation2d(kWheelBase / 2.0, -kTrackWidth / 2.0), // front right
-                new Translation2d(-kWheelBase / 2.0, kTrackWidth / 2.0), // rear left
-                new Translation2d(-kWheelBase / 2.0, -kTrackWidth / 2.0) // rear right
+                new Translation2d(kWheelBase / 2.0, -kTrackWidth / 2.0), // front left
+                new Translation2d(kWheelBase / 2.0, kTrackWidth / 2.0), // front right
+                new Translation2d(-kWheelBase / 2.0, -kTrackWidth / 2.0), // rear left
+                new Translation2d(-kWheelBase / 2.0, kTrackWidth / 2.0) // rear right
         );
         public static final int kFrontRightDriveMotor = 23;
         public static final int kFrontRightTurningMotor = 2;
@@ -134,7 +138,7 @@ public final class Constants {
         public static final double kDriveD = 0.0;
         public static final double kDriveFF = 2.96;
 
-        public static final double kTurningP = 0.01;
+        public static final double kTurningP = 0.005;
         public static final double kTurningI = 0.0;
         public static final double kTurningD = 0.005;
 
@@ -151,7 +155,7 @@ public final class Constants {
         public static final double kDriveGearRatio = 6.75;
         public static final double kDriveConversionFactor = (kWheelDiameterMeters * Math.PI) / kDriveGearRatio;
 
-        public static final double kTurnPositionConversionFactor = 21.22;
+        public static final double kTurnPositionConversionFactor = 21.428;
 
         public static final double kMaxSpeedMetersPerSecond = 4.0;
     }
@@ -159,7 +163,7 @@ public final class Constants {
     //   public static final class IntakeConstants {
     //     public static final double kRollerSpeed = -0.85; // power percentage
     //     public static final double kRollerEjectSpeed = 0.50; // power percentage
-    //   }
+    //   }/
 
     //   public static final class ShooterConstants {
     //     public static final double kTriggerSpeed = 1.0; // power percentage
