@@ -1,16 +1,15 @@
 package frc.robot.subsystems;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
 
+import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
-import org.photonvision.RobotPoseEstimator;
-import org.photonvision.RobotPoseEstimator.PoseStrategy;
+import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonPipelineResult;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -19,12 +18,13 @@ public class Vision extends SubsystemBase {
     /**
      * Creates a new Vision.
      */
-    private RobotPoseEstimator m_poseEstimator;
+    private PhotonPoseEstimator m_poseEstimator;
     private PhotonCamera m_cam;
     private AprilTagFieldLayout m_fieldLayout;
     private FullSwerveBase m_drive;
     private final PoseStrategy m_poseStrategy;
-    private Optional<Pair<Pose3d, Double>> curPose;
+    private Optional<EstimatedRobotPose> curPose;
+    private Pose3d curPose3d;
 
     public Vision(PhotonCamera cam, FullSwerveBase drive) {
         this.m_cam = cam;
@@ -37,8 +37,8 @@ public class Vision extends SubsystemBase {
         }
         this.m_poseStrategy = PoseStrategy.LOWEST_AMBIGUITY;
 
-        this.m_poseEstimator = new RobotPoseEstimator(m_fieldLayout, m_poseStrategy,
-                List.of(Pair.of(cam, new Transform3d())));
+        this.m_poseEstimator = new PhotonPoseEstimator(m_fieldLayout, m_poseStrategy,
+                cam, new Transform3d());
     }
 
     @Override
@@ -48,7 +48,8 @@ public class Vision extends SubsystemBase {
         if (latestResults.hasTargets()) {
             curPose = m_poseEstimator.update();
             if (curPose.get() != null) {
-                m_drive.addVisionOdometry(curPose.get().getFirst());
+                curPose3d = curPose.get().estimatedPose;
+                m_drive.addVisionOdometry(curPose3d);
             }
             // m_drive.addVisionOdometry(latestResults, 0);
             // System.out.println("Target Found");
@@ -56,7 +57,6 @@ public class Vision extends SubsystemBase {
             // System.out.println("Target Distance: " + latestResults.getBestTarget().getTargetDistance());
         }
         // System.out.println()
-
     }
 
     public PhotonPipelineResult getLatestResult() {

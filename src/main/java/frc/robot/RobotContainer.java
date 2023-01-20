@@ -6,13 +6,10 @@ package frc.robot;
 
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
 
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.commands.AutoSetSwerveState;
 import frc.robot.commands.FullSwerveDrive;
 import frc.robot.commands.StartSwerveTestingMode;
 import frc.robot.commands.SwitchSwerveWheel;
@@ -150,7 +147,9 @@ public class RobotContainer {
         // mTest.setDesiredState(Double);
         // return new AutoTestSequence(mTest2, mTest, 0.2);
         // return new Turn(m_SwerveBase, 50);
-        return new AutoSetSwerveState(m_RightFrontSwerveModule, new SwerveModuleState(0, new Rotation2d(3.14 / 2)));
-        // return null;
+        // return new AutoSetSwerveState(m_RightFrontSwerveModule, new SwerveModuleState(0, new Rotation2d(3.14 / 2)));
+        // PathPlannerTrajectory autoPath = PathPlanner.loadPath("Test Path", new PathConstraints(4, 3));
+        // return new FollowPath(m_SwerveBase, autoPath);
+        return null;
     }
 }

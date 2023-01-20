@@ -55,10 +55,12 @@ public class SwerveModule extends SubsystemBase {
         m_turningEncoder = m_turningMotor.getEncoder();
 
         m_turningCANCoder = new CANCoder(turningCANCoderChannel);
+
         m_turningCANCoder.configAbsoluteSensorRange(AbsoluteSensorRange.Unsigned_0_to_360);
         // m_turningCANCoder.setPosition(0);
 
         m_offset = offset;
+
         // m_CANCoderOffset = Rotation2d.fromDegrees(turningCANCoderOffsetDegrees);
         // Add smart dashboard items
         // SmartDashboard.putNumber("Drive Offset " + turningCANCoderChannel, getAbsoluteRotation().getDegrees());
