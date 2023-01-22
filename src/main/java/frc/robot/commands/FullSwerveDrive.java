@@ -6,6 +6,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.FullSwerveBase;
+import frc.robot.util.EricNubControls;
 
 public class FullSwerveDrive extends CommandBase {
 
@@ -17,6 +18,7 @@ public class FullSwerveDrive extends CommandBase {
     double curZRotation;
     FullSwerveBase swerveBase;
     ChassisSpeeds speeds;
+    EricNubControls controlsHandler = new EricNubControls();
 
     public FullSwerveDrive(FullSwerveBase swerveDrive, Supplier<Double> xSpeed, Supplier<Double> ySpeed,
             Supplier<Double> zRotation) {
@@ -33,17 +35,20 @@ public class FullSwerveDrive extends CommandBase {
     }
 
     public void execute() {
-        curXSpeed = -xSpeed.get() * DriveConstants.kMaxSpeedMetersPerSecond;
-        curYSpeed = ySpeed.get() * DriveConstants.kMaxSpeedMetersPerSecond;
-        curZRotation = zRotation.get() * DriveConstants.kMaxAngularSpeed;
+        curXSpeed = controlsHandler.addDeadzoneScaled(xSpeed.get(), .1)
+                * DriveConstants.kMaxSpeedMetersPerSecond;
+        curYSpeed = controlsHandler.addDeadzoneScaled(ySpeed.get(), 0.1)
+                * DriveConstants.kMaxSpeedMetersPerSecond;
+        curZRotation = controlsHandler.addDeadzoneScaled(zRotation.get(), 0.1)
+                * DriveConstants.kMaxAngularSpeed;
         // if (curXSpeed != 0 || curYSpeed != 0 || curZRotation != 0) {
-        // speeds = ChassisSpeeds.fromFieldRelativeSpeeds(curXSpeed, curYSpeed, curZRotation,
-        //         swerveBase.getGyroAngle());
-        // swerveBase.drive(speeds);
-        // } else {
-        speeds = new ChassisSpeeds(xSpeed.get(), ySpeed.get(),
-                zRotation.get() * DriveConstants.kMaxRotationalVelocity);
+        speeds = ChassisSpeeds.fromFieldRelativeSpeeds(curXSpeed, curYSpeed, curZRotation,
+                swerveBase.getPose().getRotation());
         swerveBase.drive(speeds);
+        // } else {
+        // speeds = new ChassisSpeeds(xSpeed.get(), ySpeed.get(),
+        //         zRotation.get() * DriveConstants.kMaxRotationalVelocity);
+        // swerveBase.drive(speeds);
         // }
         // swerveBase.drive(xSpeed.get(), ySpeed.get(), zRotation.get());
     }

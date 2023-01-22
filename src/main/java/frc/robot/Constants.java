@@ -3,6 +3,7 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
+import frc.robot.util.TunableNumber;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -13,8 +14,10 @@ import edu.wpi.first.math.util.Units;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+    public static final Boolean tuningMode = true;
+
     public static final class Vision {
-        public static final String firstCameraName = "Front Camera";
+        public static final String firstCameraName = "limelight";
     }
 
     public static final class ElectricalConstants {
@@ -90,28 +93,32 @@ public final class Constants {
 
         // Units are meters.
         // Distance between centers of right and left wheels on robot
-        public static final double kTrackWidth = Units.inchesToMeters(28); // 22.5 in
+        public static final double kTrackWidth = Units.inchesToMeters(23); // 22.5 in
 
         // Distance between front and back wheels on robot
-        public static final double kWheelBase = Units.inchesToMeters(28); // 24.5 in
+        public static final double kWheelBase = Units.inchesToMeters(23); // 24.5 in
 
         // Units are meters per second
         public static final double kMaxTranslationalVelocity = 3.5; //max 4.5
 
         // Units are radians per second
-        public static final double kMaxRotationalVelocity = 1 * Math.PI; //max 5.0
+        public static final double kMaxRotationalVelocity = .01 * Math.PI; //max 5.0
         public static final double kMaxSpeedMetersPerSecond = 3.5;
         // // Max velocity
 
         // //The locations for the modules must be relative to the center of the robot. 
         // // Positive x values represent moving toward the front of the robot 
         // // Positive y values represent moving toward the left of the robot.
-        public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
-                new Translation2d(kWheelBase / 2.0, -kTrackWidth / 2.0), // front left
-                new Translation2d(kWheelBase / 2.0, kTrackWidth / 2.0), // front right
-                new Translation2d(-kWheelBase / 2.0, -kTrackWidth / 2.0), // rear left
-                new Translation2d(-kWheelBase / 2.0, kTrackWidth / 2.0) // rear right
-        );
+
+        public static Translation2d[] kModuleTranslations = {
+                new Translation2d(kWheelBase / 2.0, kTrackWidth / 2.0), // front left
+                new Translation2d(kWheelBase / 2.0, -kTrackWidth / 2.0), // front right
+                new Translation2d(-kWheelBase / 2.0, kTrackWidth / 2.0), // rear left
+                new Translation2d(-kWheelBase / 2.0, -kTrackWidth / 2.0) // rear right
+        };
+
+        public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(kModuleTranslations);
+
         public static final int kFrontRightDriveMotor = 23;
         public static final int kFrontRightTurningMotor = 2;
         public static final int kFrontRightEncoder = 1;
@@ -133,14 +140,14 @@ public final class Constants {
     }
 
     public static final class ModuleConstants {
-        public static final double kDriveP = 0.01;
-        public static final double kDriveI = 0.0;
-        public static final double kDriveD = 0.0;
-        public static final double kDriveFF = 2.96;
+        public static final TunableNumber kDriveP = new TunableNumber("Drive P", 0.01);
+        public static final TunableNumber kDriveI = new TunableNumber("Drive I", 0.0);
+        public static final TunableNumber kDriveD = new TunableNumber("Drive D", 0.00);
+        public static final TunableNumber kDriveFF = new TunableNumber("Drive FF", 2.96);
 
-        public static final double kTurningP = 0.005;
-        public static final double kTurningI = 0.0;
-        public static final double kTurningD = 0.005;
+        public static final TunableNumber kTurningP = new TunableNumber("Tur P", 0.005);
+        public static final TunableNumber kTurningI = new TunableNumber("Turnin I", 0.00);
+        public static final TunableNumber kTurningD = new TunableNumber("Turnin D", 0.005);
 
         public static final double kMaxModuleAngularSpeedRadiansPerSecond = 0.005 * Math.PI;
         public static final double kMaxModuleAngularAccelerationRadiansPerSecondSquared = 0.000005 * Math.PI;
@@ -155,9 +162,9 @@ public final class Constants {
         public static final double kDriveGearRatio = 6.75;
         public static final double kDriveConversionFactor = (kWheelDiameterMeters * Math.PI) / kDriveGearRatio;
 
-        public static final double kTurnPositionConversionFactor = 21.428;
+        public static final double kTurnPositionConversionFactor = 21.428; // 21.428
 
-        public static final double kMaxSpeedMetersPerSecond = 4.0;
+        public static final double kMaxSpeedMetersPerSecond = 12.0;
     }
 
     //   public static final class IntakeConstants {

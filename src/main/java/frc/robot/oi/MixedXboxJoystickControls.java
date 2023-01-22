@@ -148,4 +148,20 @@ public class MixedXboxJoystickControls implements UserControls {
         return 0.0;
     }
 
+    @Override
+    public Trigger resetPoseTrigger() {
+        return new Trigger(() -> operatorController.getYButtonPressed());
+
+    }
+
+    @Override
+    public Trigger moveToPoseTrigger() {
+        return new Trigger(() -> leftDriverJoystick.getRawButton(4));
+    }
+
+    @Override
+    public Trigger stopMoveToPoseTrigger() {
+        return new Trigger(() -> leftDriverJoystick.getRawButton(5));
+    }
+
 }

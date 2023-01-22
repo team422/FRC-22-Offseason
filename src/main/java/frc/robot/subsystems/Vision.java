@@ -11,7 +11,11 @@ import org.photonvision.targeting.PhotonPipelineResult;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Vision extends SubsystemBase {
@@ -30,15 +34,19 @@ public class Vision extends SubsystemBase {
         this.m_cam = cam;
         m_drive = drive;
         try {
-            this.m_fieldLayout = new AprilTagFieldLayout("taglayout.json");
+            this.m_fieldLayout = new AprilTagFieldLayout(Filesystem.getDeployDirectory() + "/taglayout.json");
         } catch (IOException e) {
-            System.out.println("Error loading taglayout.json");
+            System.out.println(Filesystem.getDeployDirectory() + "/taglayout.json" + e);
             System.exit(1);
         }
         this.m_poseStrategy = PoseStrategy.LOWEST_AMBIGUITY;
 
         this.m_poseEstimator = new PhotonPoseEstimator(m_fieldLayout, m_poseStrategy,
-                cam, new Transform3d());
+                cam, new Transform3d(new Translation3d(
+                        Units.inchesToMeters(15.5),
+                        Units.inchesToMeters(-0.6),
+                        Units.inchesToMeters(5.4375)),
+                        new Rotation3d()));
     }
 
     @Override
@@ -47,9 +55,9 @@ public class Vision extends SubsystemBase {
         PhotonPipelineResult latestResults = this.getLatestResult();
         if (latestResults.hasTargets()) {
             curPose = m_poseEstimator.update();
-            if (curPose.get() != null) {
+            if (curPose.isPresent()) {
                 curPose3d = curPose.get().estimatedPose;
-                m_drive.addVisionOdometry(curPose3d);
+                m_drive.addVisionOdometry(curPose3d, curPose.get().timestampSeconds);
             }
             // m_drive.addVisionOdometry(latestResults, 0);
             // System.out.println("Target Found");

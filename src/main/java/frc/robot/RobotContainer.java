@@ -4,12 +4,29 @@
 
 package frc.robot;
 
-import com.ctre.phoenix.sensors.WPI_Pigeon2;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import org.photonvision.PhotonCamera;
+
+import com.ctre.phoenix.sensors.WPI_Pigeon2;
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.auto.BaseAutoBuilder;
+import com.pathplanner.lib.auto.PIDConstants;
+import com.pathplanner.lib.auto.SwerveAutoBuilder;
+
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.commands.DriveToPoint;
 import frc.robot.commands.FullSwerveDrive;
 import frc.robot.commands.StartSwerveTestingMode;
 import frc.robot.commands.SwitchSwerveWheel;
@@ -18,6 +35,7 @@ import frc.robot.oi.UserControls;
 import frc.robot.subsystems.FullSwerveBase;
 import frc.robot.subsystems.SwerveModule;
 import frc.robot.subsystems.Vision;
+import frc.robot.util.CustomHolmonomicDrive;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -36,7 +54,7 @@ public class RobotContainer {
     SwerveModule m_LeftRearSwerveModule;
     SwerveModule[] m_SwerveModules;
 
-    FullSwerveBase m_SwerveBase;
+    FullSwerveBase m_swerveBase;
 
     private XboxController myController;
 
@@ -97,15 +115,15 @@ public class RobotContainer {
 
         // m_Gyro = new ADXRS450_Gyro();
 
-        m_SwerveBase = new FullSwerveBase(m_SwerveModules, m_Gyro);
+        m_swerveBase = new FullSwerveBase(m_SwerveModules, m_Gyro);
 
-        // m_Vision = new Vision(new PhotonCamera(Constants.Vision.firstCameraName), m_SwerveBase);
+        m_Vision = new Vision(new PhotonCamera(Constants.Vision.firstCameraName), m_swerveBase);
 
         configureButtonBindings();
     }
 
     public void printDriveBaseVals() {
-        m_SwerveBase.printAllVals();
+        m_swerveBase.printAllVals();
     }
 
     public void printSingleModuleData() {
@@ -126,13 +144,20 @@ public class RobotContainer {
 
         // new JoystickButton(myController, 1).whenHeld(new DriveOneModule(mTest, () -> myController.getLeftX(),
         //         () -> myController.getLeftY(), () -> myController.getRightX()));
-        FullSwerveDrive driveCommand = new FullSwerveDrive(m_SwerveBase, () -> -controls.getLeftDriveX(),
-                () -> controls.getLeftDriveY(), () -> -controls.getRightDriveX());// , m_SwerveBase.getHeading()
-        m_SwerveBase.setDefaultCommand(driveCommand);
-        controls.getAButtonOperator().onTrue(new SwitchSwerveWheel(m_SwerveBase));
+        FullSwerveDrive driveCommand = new FullSwerveDrive(m_swerveBase, () -> -controls.getLeftDriveY(),
+                () -> -controls.getLeftDriveX(), () -> -controls.getRightDriveX());// , m_SwerveBase.getHeading()
+        m_swerveBase.setDefaultCommand(driveCommand);
+        controls.getAButtonOperator().onTrue(new SwitchSwerveWheel(m_swerveBase));
         // while active once is now deprecated
-
-        controls.getBButtonOperator().onTrue(new StartSwerveTestingMode(m_SwerveBase));
+        controls.getBButtonOperator().onTrue(new StartSwerveTestingMode(m_swerveBase));
+        controls.resetPoseTrigger().onTrue(
+                Commands.runOnce(() -> m_swerveBase.resetPose(new Pose2d(5, 3, new Rotation2d())), m_swerveBase));
+        PIDController pidControllerXY = new PIDController(0.24, 0.1, 0.1);
+        CustomHolmonomicDrive holonomicDrive = new CustomHolmonomicDrive(pidControllerXY, pidControllerXY);
+        DriveToPoint driveToPointTesting = new DriveToPoint(m_swerveBase, new Pose2d(4.08, 7.59, new Rotation2d()),
+                holonomicDrive, () -> controls.getLeftDriveY(), () -> -controls.getLeftDriveX(),
+                () -> -controls.getRightDriveX());
+        controls.moveToPoseTrigger().whileTrue(driveToPointTesting);
 
     }
 
@@ -148,8 +173,21 @@ public class RobotContainer {
         // return new AutoTestSequence(mTest2, mTest, 0.2);
         // return new Turn(m_SwerveBase, 50);
         // return new AutoSetSwerveState(m_RightFrontSwerveModule, new SwerveModuleState(0, new Rotation2d(3.14 / 2)));
-        // PathPlannerTrajectory autoPath = PathPlanner.loadPath("Test Path", new PathConstraints(4, 3));
+
+        var autoPath = PathPlanner.loadPathGroup("Test Path", new PathConstraints(2, 1));
+        List<PathPlannerTrajectory.EventMarker> events;
+        Map<String, Command> eventMap = new HashMap<>();
         // return new FollowPath(m_SwerveBase, autoPath);
-        return null;
+        PIDConstants linearPIDConstants = new PIDConstants(.01, 0, 0);
+        PIDConstants angularPIDConstants = new PIDConstants(.01, 0, 0);
+        BaseAutoBuilder autoBuilder = new SwerveAutoBuilder(
+                m_swerveBase::getPose,
+                m_swerveBase::resetPose,
+                linearPIDConstants, angularPIDConstants,
+                m_swerveBase::drive,
+                eventMap,
+                m_swerveBase);
+
+        return autoBuilder.fullAuto(autoPath);
     }
 }

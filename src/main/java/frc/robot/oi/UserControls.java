@@ -116,4 +116,16 @@ public interface UserControls {
     public default Trigger getBButtonOperator() {
         return new Trigger();
     }
+
+    public default Trigger resetPoseTrigger() {
+        return new Trigger();
+    }
+
+    public default Trigger moveToPoseTrigger() {
+        return new Trigger();
+    }
+
+    public default Trigger stopMoveToPoseTrigger() {
+        return new Trigger();
+    }
 }

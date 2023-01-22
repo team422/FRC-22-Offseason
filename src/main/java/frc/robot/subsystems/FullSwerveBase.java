@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -8,10 +9,12 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.util.FieldUtil;
 
 public class FullSwerveBase extends SubsystemBase {
     /**
@@ -24,12 +27,14 @@ public class FullSwerveBase extends SubsystemBase {
     // Swerve Drive Odometry with vision correction
     SwerveModulePosition[] modulePositions = new SwerveModulePosition[4];
     String m_swerveModuleNames[] = { "Left Front", "Right Front", "Left Rear", "Right Rear" };
+    Double m_swerveModuleStopAngles[] = { 45.0, 135.0, -45.0, -135.0 };
 
     //target pose and controller
     Pose2d m_targetPose;
     PIDController m_thetaController = new PIDController(1.0, 0.0, 0.05);
     int m_currentWheel = 0;
-    Boolean m_singleWheelMode = true;
+    Boolean m_singleWheelMode = false;
+    double max_speed = 0;
 
     public FullSwerveBase(SwerveModule[] swerveModules, Gyro gyro) {
         // Setting up all the modules
@@ -54,18 +59,12 @@ public class FullSwerveBase extends SubsystemBase {
 
         // odometry stuff
         // SwerveModulePositions[] modulePositions = new SwerveModulePositions[4];
-        // double[][] stdDeviations = new double[3][1];
-        // Matrix<N3, N1> stdDeviations = new Matrix(new Nat<N3>(3), new Nat<N1>(1));
 
-        // stdDeviations.set(0, 0, 0.1);
-        // stdDeviations.set(1, 0, 0.1);
-        // stdDeviations.set(2, 0, 0.1);
         for (int i = 0; i < 4; i++) {
             modulePositions[i] = new SwerveModulePosition(m_swerveModules[i].getDriveDistanceMeters(),
                     m_swerveModules[i].getTurnDegrees());
         }
         // SwerveModulePositions[] modulePositions = new SwerveModulePositions[4];
-        // Matrix<Integer, Double> stdDevMatrix = new Matrix<>(3, 4);
         // Rotation2d gyroAngle,
         //   Pose2d initialPoseMeters,
         //   SwerveDriveKinematics kinematics,
@@ -73,8 +72,13 @@ public class FullSwerveBase extends SubsystemBase {
         //   Matrix<N1, N1> localMeasurementStdDevs,
         //   Matrix<N3, N1> visionMeasurementStdDevs)
         // m_odometry = new SwerveDrivePoseEstimator(this.getHeading(), new Pose2d(), DriveConstants.kDriveKinematics,stdDeviations, stdDeviations, stdDeviations);
-        m_odometry = new SwerveDrivePoseEstimator(DriveConstants.kDriveKinematics, this.getHeading(), modulePositions,
-                new Pose2d());
+        m_odometry = new SwerveDrivePoseEstimator(
+                DriveConstants.kDriveKinematics,
+                this.getHeading(),
+                modulePositions,
+                new Pose2d(),
+                VecBuilder.fill(0.1, 0.1, Units.degreesToRadians(5)),
+                VecBuilder.fill(5, 5, Units.degreesToRadians(25)));
         // // DriveConstants.kDriveKinematics,  
     }
 
@@ -105,6 +109,16 @@ public class FullSwerveBase extends SubsystemBase {
         SmartDashboard.putNumber("Right Front encoder", m_swerveModules[1].getTurnDegrees().getDegrees());
         SmartDashboard.putNumber("Left Rear encoder", m_swerveModules[2].getTurnDegrees().getDegrees());
         SmartDashboard.putNumber("Right Rear encoder", m_swerveModules[3].getTurnDegrees().getDegrees());
+        if (Math.abs(m_swerveModules[0].getDriveVelocityMetersPerSecond()) > max_speed) {
+            max_speed = Math.abs(m_swerveModules[0].getDriveVelocityMetersPerSecond());
+            SmartDashboard.putNumber("VELOCITY STRAIGHT", max_speed);
+        }
+        SmartDashboard.putNumber("cur velocity", m_swerveModules[0].getDriveVelocityMetersPerSecond());
+
+        SmartDashboard.putNumber(" ODO X", getPose().getX());
+        SmartDashboard.putNumber(" ODO Y", getPose().getY());
+        SmartDashboard.putNumber(" ODO Angle", getPose().getRotation().getDegrees());
+        FieldUtil.getDefaultField().setSwerveRobotPose(this.getPose(), this);
 
         // SmartDashboard.putNumber("targetPoseAngle", m_targetPose.getRotation().getRadians());
         /*
@@ -119,9 +133,7 @@ public class FullSwerveBase extends SubsystemBase {
 
     // returns estimated position based on odometry
     public Pose2d getPose() {
-        // return new Pose2d();
-        // return m_odometry.getPoseMeters();
-        return new Pose2d();
+        return m_odometry.getEstimatedPosition();
     }
 
     public void printAllVals() {
@@ -167,7 +179,7 @@ public class FullSwerveBase extends SubsystemBase {
         }
         if (!this.m_singleWheelMode) {
             // SwerveModule.normalizeWheelSpeeds(moduleStates, DriveConstants.kMaxSpeedMetersPerSecond);
-            setModuleStates(moduleStates);
+            setModuleStates(moduleStatesFinal);
         } else {
             m_swerveModules[this.m_currentWheel]
                     .setDesiredState(moduleStates[this.m_currentWheel]);
@@ -196,8 +208,23 @@ public class FullSwerveBase extends SubsystemBase {
         return m_gyro.getRotation2d();
     }
 
-    public void addVisionOdometry(Pose3d pose) {
+    public void addVisionOdometry(Pose3d pose, double timestampSeconds) {
         m_odometry.addVisionMeasurement(new Pose2d(pose.getX(), pose.getY(), pose.getRotation().toRotation2d()),
-                m_currentWheel);
+                timestampSeconds);
+    }
+
+    public SwerveModuleState[] getSwerveStates() {
+        return new SwerveModuleState[] { m_swerveModules[0].getState(), m_swerveModules[1].getState(),
+                m_swerveModules[2].getState(), m_swerveModules[3].getState() };
+    }
+
+    public SwerveModulePosition[] getSwervePositions() {
+        return new SwerveModulePosition[] { m_swerveModules[0].getPosition(), m_swerveModules[1].getPosition(),
+                m_swerveModules[2].getPosition(), m_swerveModules[3].getPosition() };
+    }
+
+    public void resetPose(Pose2d pose) {
+        m_odometry.resetPosition(getGyroAngle(), getSwervePositions(), pose);
+
     }
 }
